@@ -1,1131 +1,1197 @@
 <!doctype html>
 <html lang="ko">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>슈식 제철요리 실습실</title>
-    <style>
-      :root {
-        --ink: #2b2118;
-        --muted: #766959;
-        --paper: #fff6e7;
-        --panel: rgba(255, 253, 247, 0.96);
-        --line: #ead6b9;
-        --accent: #e45d45;
-        --gold: #f5b23c;
-        --green: #2f9e63;
-        --blue: #3d8bcc;
-        --bad: #d84f4f;
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      html,
-      body {
-        margin: 0;
-        min-height: 100%;
-      }
-
-      body {
-        color: var(--ink);
-        background:
-          linear-gradient(rgba(120, 86, 46, 0.06) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(120, 86, 46, 0.06) 1px, transparent 1px),
-          radial-gradient(circle at 14% 12%, rgba(245, 178, 60, 0.3), transparent 28%),
-          radial-gradient(circle at 84% 10%, rgba(228, 93, 69, 0.18), transparent 30%),
-          #fff2dd;
-        background-size: 34px 34px, 34px 34px, auto, auto, auto;
-        font-family:
-          Pretendard,
-          "Noto Sans KR",
-          system-ui,
-          -apple-system,
-          BlinkMacSystemFont,
-          "Segoe UI",
-          sans-serif;
-      }
-
-      button {
-        font: inherit;
-      }
-
-      .app {
-        width: min(1240px, 100%);
-        min-height: 100vh;
-        margin: 0 auto;
-        padding: 14px;
-        display: grid;
-        grid-template-rows: auto 1fr;
-        gap: 12px;
-      }
-
-      .top {
-        display: grid;
-        grid-template-columns: 1fr auto;
-        gap: 12px;
-        align-items: end;
-      }
-
-      .kicker {
-        margin: 0 0 5px;
-        color: var(--accent);
-        font-weight: 950;
-        font-size: 0.88rem;
-      }
-
-      h1,
-      h2,
-      h3,
-      p {
-        margin-top: 0;
-      }
-
-      h1 {
-        margin-bottom: 0;
-        font-size: clamp(1.8rem, 4vw, 3.35rem);
-        line-height: 1;
-        letter-spacing: 0;
-      }
-
-      .hud {
-        display: grid;
-        grid-template-columns: repeat(5, minmax(72px, 1fr));
-        gap: 8px;
-        min-width: min(640px, 100%);
-      }
-
-      .metric,
-      .panel,
-      .station,
-      .ingredient,
-      .slot {
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        background: var(--panel);
-        box-shadow: 0 12px 26px rgba(77, 47, 23, 0.1);
-      }
-
-      .metric {
-        padding: 9px 11px;
-      }
-
-      .metric span {
-        display: block;
-        color: var(--muted);
-        font-size: 0.75rem;
-        font-weight: 850;
-      }
-
-      .metric strong {
-        display: block;
-        margin-top: 3px;
-        font-size: 1.22rem;
-        line-height: 1;
-      }
-
-      .game {
-        display: grid;
-        grid-template-columns: 310px 1fr 280px;
-        gap: 12px;
-        align-items: start;
-      }
-
-      .panel {
-        padding: 14px;
-      }
-
-      .left,
-      .middle,
-      .right {
-        display: grid;
-        gap: 12px;
-        align-content: start;
-      }
-
-      .customer {
-        display: grid;
-        grid-template-columns: auto 1fr;
-        gap: 11px;
-        align-items: center;
-      }
-
-      .face {
-        width: 64px;
-        height: 64px;
-        display: grid;
-        place-items: center;
-        border-radius: 8px;
-        background: #ffe0ba;
-        font-size: 2.1rem;
-        box-shadow: inset 0 0 0 2px rgba(43, 33, 24, 0.08);
-      }
-
-      .order-title {
-        margin: 0;
-        font-size: 1.28rem;
-        line-height: 1.1;
-      }
-
-      .order-copy {
-        margin: 6px 0 0;
-        color: var(--muted);
-        font-weight: 780;
-        line-height: 1.34;
-      }
-
-      .bar {
-        height: 12px;
-        border-radius: 999px;
-        background: #f0dfc4;
-        overflow: hidden;
-      }
-
-      .fill {
-        width: 100%;
-        height: 100%;
-        border-radius: inherit;
-        background: linear-gradient(90deg, var(--green), var(--gold));
-        transition: width 100ms linear;
-      }
-
-      .order-list,
-      .pantry,
-      .tray-list {
-        display: grid;
-        gap: 8px;
-      }
-
-      .need {
-        display: grid;
-        grid-template-columns: auto 1fr auto;
-        gap: 8px;
-        align-items: center;
-        min-height: 40px;
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        background: #fff;
-        padding: 8px 10px;
-      }
-
-      .need.done {
-        border-color: rgba(47, 158, 99, 0.38);
-        background: #edf9e9;
-      }
-
-      .label {
-        color: var(--muted);
-        font-size: 0.78rem;
-        font-weight: 900;
-      }
-
-      .name {
-        font-weight: 950;
-        word-break: keep-all;
-      }
-
-      .check {
-        width: 22px;
-        height: 22px;
-        display: grid;
-        place-items: center;
-        border-radius: 999px;
-        background: #f1e2c9;
-        color: var(--muted);
-        font-weight: 950;
-      }
-
-      .done .check,
-      .slot.filled .check {
-        background: var(--green);
-        color: #fff;
-      }
-
-      .ingredient {
-        min-height: 54px;
-        display: grid;
-        grid-template-columns: auto 1fr;
-        gap: 8px;
-        align-items: center;
-        padding: 8px 10px;
-        cursor: grab;
-        touch-action: none;
-        user-select: none;
-      }
-
-      .ingredient.used {
-        opacity: 0.42;
-      }
-
-      .emoji {
-        font-size: 1.65rem;
-      }
-
-      .small {
-        display: block;
-        color: var(--muted);
-        font-size: 0.76rem;
-        font-weight: 850;
-      }
-
-      .stations {
-        display: grid;
-        grid-template-columns: repeat(5, minmax(112px, 1fr));
-        gap: 10px;
-      }
-
-      .station {
-        min-height: 250px;
-        padding: 11px;
-        display: grid;
-        grid-template-rows: auto 1fr auto;
-        gap: 8px;
-      }
-
-      .station.loaded {
-        border-color: rgba(61, 139, 204, 0.5);
-        background: #f2f9ff;
-      }
-
-      .station.ready {
-        border-color: rgba(47, 158, 99, 0.6);
-        background: #effbec;
-      }
-
-      .station-head {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 8px;
-      }
-
-      .station h3 {
-        margin: 0;
-        font-size: 0.98rem;
-      }
-
-      .station-target {
-        min-height: 96px;
-        border: 2px dashed #dec8aa;
-        border-radius: 8px;
-        background: #fffaf0;
-        display: grid;
-        place-items: center;
-        padding: 8px;
-        text-align: center;
-      }
-
-      .station.loaded .station-target,
-      .station.ready .station-target {
-        border-style: solid;
-        border-color: rgba(43, 33, 24, 0.08);
-      }
-
-      .station-food {
-        display: grid;
-        gap: 3px;
-        place-items: center;
-      }
-
-      .station-food .emoji {
-        font-size: 2.2rem;
-      }
-
-      .action-pad {
-        min-height: 74px;
-        border-radius: 8px;
-        background: #fff;
-        border: 1px solid var(--line);
-        padding: 8px;
-        text-align: center;
-        touch-action: none;
-        user-select: none;
-      }
-
-      .action-pad.active {
-        background: #fff7e2;
-      }
-
-      .action-title {
-        display: block;
-        font-weight: 950;
-      }
-
-      .action-help {
-        display: block;
-        margin-top: 3px;
-        color: var(--muted);
-        font-size: 0.75rem;
-        font-weight: 820;
-        line-height: 1.25;
-      }
-
-      .progress {
-        height: 10px;
-        margin-top: 7px;
-        border-radius: 999px;
-        background: #ecdcc4;
-        overflow: hidden;
-      }
-
-      .progress-fill {
-        height: 100%;
-        width: 0%;
-        background: var(--blue);
-        border-radius: inherit;
-      }
-
-      .station.ready .progress-fill {
-        background: var(--green);
-      }
-
-      .dish {
-        margin-top: 7px;
-        min-height: 34px;
-        border-radius: 8px;
-        background: var(--green);
-        color: #fff;
-        display: grid;
-        place-items: center;
-        font-weight: 950;
-        cursor: grab;
-        touch-action: none;
-        user-select: none;
-      }
-
-      .slot {
-        min-height: 55px;
-        display: grid;
-        grid-template-columns: auto 1fr auto;
-        gap: 8px;
-        align-items: center;
-        padding: 9px 10px;
-        border-style: dashed;
-      }
-
-      .slot.filled {
-        border-style: solid;
-        border-color: rgba(47, 158, 99, 0.38);
-        background: #edf9e9;
-      }
-
-      .message {
-        min-height: 56px;
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        background: #fff;
-        padding: 12px;
-        color: var(--muted);
-        font-weight: 850;
-        line-height: 1.36;
-      }
-
-      .controls {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-      }
-
-      .primary,
-      .ghost {
-        min-height: 48px;
-        border-radius: 8px;
-        border: 0;
-        cursor: pointer;
-        font-weight: 950;
-      }
-
-      .primary {
-        background: var(--ink);
-        color: #fff;
-      }
-
-      .ghost {
-        border: 1px solid var(--line);
-        background: #fff;
-        color: var(--ink);
-      }
-
-      .primary:disabled,
-      .ghost:disabled {
-        opacity: 0.44;
-        cursor: not-allowed;
-      }
-
-      .drag-ghost {
-        position: fixed;
-        z-index: 30;
-        pointer-events: none;
-        transform: translate(-50%, -50%);
-        min-width: 132px;
-        border-radius: 8px;
-        background: #fff;
-        border: 1px solid var(--line);
-        box-shadow: 0 18px 40px rgba(43, 33, 24, 0.24);
-        padding: 10px 12px;
-        font-weight: 950;
-      }
-
-      .overlay {
-        position: fixed;
-        inset: 0;
-        display: none;
-        place-items: center;
-        padding: 20px;
-        background: rgba(43, 33, 24, 0.42);
-        backdrop-filter: blur(8px);
-        z-index: 20;
-      }
-
-      .overlay.show {
-        display: grid;
-      }
-
-      .modal {
-        width: min(500px, 100%);
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        background: var(--panel);
-        padding: 24px;
-        text-align: center;
-        box-shadow: 0 22px 54px rgba(43, 33, 24, 0.24);
-      }
-
-      .modal h2 {
-        margin-bottom: 10px;
-      }
-
-      .modal p {
-        margin: 0 0 18px;
-        color: var(--muted);
-        font-weight: 800;
-        line-height: 1.5;
-      }
-
-      .modal .primary {
-        width: 100%;
-      }
-
-      @media (max-width: 1040px) {
-        .top,
-        .game {
-          grid-template-columns: 1fr;
-        }
-
-        .hud {
-          min-width: 0;
-        }
-
-        .stations {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-      }
-
-      @media (max-width: 560px) {
-        .app {
-          padding: 10px;
-        }
-
-        .hud {
-          grid-template-columns: repeat(3, minmax(0, 1fr));
-        }
-
-        .stations,
-        .controls {
-          grid-template-columns: 1fr;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <main class="app">
-      <header class="top">
-        <div>
-          <p class="kicker">드래그 · 젓기 · 썰기 · 길게 누르기 · 뒤집기</p>
-          <h1>슈식 제철요리 실습실</h1>
-        </div>
-        <section class="hud" aria-label="게임 상태">
-          <div class="metric"><span>매출</span><strong id="score">0원</strong></div>
-          <div class="metric"><span>시간</span><strong id="time">150</strong></div>
-          <div class="metric"><span>손님</span><strong id="served">0명</strong></div>
-          <div class="metric"><span>콤보</span><strong id="combo">0</strong></div>
-          <div class="metric"><span>실수</span><strong id="mistakes">0/5</strong></div>
-        </section>
-      </header>
-
-      <section class="game">
-        <aside class="left">
-          <section class="panel">
-            <div class="customer">
-              <div class="face" id="customerFace">🙂</div>
-              <div>
-                <h2 class="order-title" id="orderTitle">봄 제철 한 끼</h2>
-                <p class="order-copy" id="orderCopy">주문 대기 중</p>
-              </div>
-            </div>
-            <div class="bar" aria-hidden="true"><div class="fill" id="patienceFill"></div></div>
-          </section>
-
-          <section class="panel">
-            <h2>주문서</h2>
-            <div class="order-list" id="orderList"></div>
-          </section>
-
-          <section class="panel">
-            <h2>재료 냉장고</h2>
-            <div class="pantry" id="pantry"></div>
-          </section>
-        </aside>
-
-        <section class="middle">
-          <section class="stations" id="stations"></section>
-          <div class="message" id="message">재료를 조리대에 끌어다 놓고, 조리 동작을 수행하세요.</div>
-        </section>
-
-        <aside class="right">
-          <section class="panel">
-            <h2>식판</h2>
-            <div class="tray-list" id="tray"></div>
-          </section>
-          <section class="controls">
-            <button class="primary" id="serveButton" type="button">서빙</button>
-            <button class="ghost" id="clearButton" type="button">비우기</button>
-          </section>
-        </aside>
-      </section>
-    </main>
-
-    <div class="overlay show" id="startOverlay">
-      <div class="modal">
-        <h2>진짜 손을 써서 요리하기</h2>
-        <p>재료를 끌어 조리대에 올리고, 각 조리대의 동작을 수행한 뒤 완성 접시를 식판으로 끌어 담으세요.</p>
-        <button class="primary" id="startButton" type="button">실습 시작</button>
-      </div>
-    </div>
-
-    <div class="overlay" id="endOverlay">
-      <div class="modal">
-        <h2 id="endTitle">영업 종료</h2>
-        <p id="endText">오늘 매출 0원</p>
-        <button class="primary" id="restartButton" type="button">다시 하기</button>
-      </div>
-    </div>
-
-    <script>
-      "use strict";
-
-      const SLOT_CONFIG = [
-        { key: "main", label: "메인", station: "불판", icon: "🔥", action: "flip", actionName: "뒤집기", help: "좌우로 크게 4번 문지르기", need: 4 },
-        { key: "rice", label: "밥", station: "밥솥", icon: "🍚", action: "hold", actionName: "뜸들이기", help: "1.2초 동안 길게 누르기", need: 100 },
-        { key: "soup", label: "국", station: "냄비", icon: "🥣", action: "stir", actionName: "젓기", help: "냄비 위를 계속 빙빙 젓기", need: 100 },
-        { key: "side", label: "반찬", station: "도마", icon: "🔪", action: "slice", actionName: "칼질", help: "위아래로 5번 썰기", need: 5 },
-        { key: "dessert", label: "후식", station: "과일볼", icon: "🍓", action: "shake", actionName: "담기", help: "좌우로 4번 흔들기", need: 4 },
-      ];
-
-      const MEALS = [
-        meal("봄", "🌱", "#76a943", "남 710 kcal · 단백질 49g / 여 560 kcal · 단백질 38g", [
-          food("main", "쭈꾸미볶음", "🐙"),
-          food("rice", "잡곡밥", "🍚"),
-          food("soup", "바지락냉이국", "🥣"),
-          food("side", "달래무침", "🥬"),
-          food("dessert", "딸기", "🍓"),
-        ]),
-        meal("여름", "☀️", "#3e9bd2", "남 765 kcal · 단백질 43g / 여 623 kcal · 단백질 36g", [
-          food("main", "오징어·가지볶음", "🦑"),
-          food("rice", "잡곡밥", "🍚"),
-          food("soup", "오이냉국", "🥒"),
-          food("side", "토마토", "🍅"),
-          food("dessert", "수박", "🍉"),
-        ]),
-        meal("가을", "🍁", "#c7832f", "남 820 kcal · 단백질 42g / 여 720 kcal · 단백질 37g", [
-          food("main", "고등어구이", "🐟"),
-          food("rice", "백미밥", "🍚"),
-          food("soup", "배추된장국", "🥣"),
-          food("side", "버섯볶음", "🍄"),
-          food("dessert", "단호박·사과", "🍎"),
-        ]),
-        meal("겨울", "❄️", "#d6655e", "남 약 835 kcal · 단백질 42g / 여 약 650 kcal · 단백질 34g", [
-          food("main", "고등어구이", "🐟"),
-          food("rice", "현미밥", "🍚"),
-          food("soup", "굴미역국", "🦪"),
-          food("side", "시금치나물·김치", "🥬"),
-          food("dessert", "감귤", "🍊"),
-        ]),
-      ];
-
-      const DECOYS = [
-        food("main", "하남쭈꾸미", "🐙"),
-        food("rice", "현미귀리밥", "🍚"),
-        food("soup", "조개국·미역국", "🥣"),
-        food("side", "부추무침", "🥗"),
-        food("dessert", "방울토마토", "🍅"),
-        food("side", "애호박볶음", "🥒"),
-        food("main", "꽁치·삼치구이", "🐟"),
-        food("dessert", "오렌지 과일컵", "🍊"),
-      ];
-
-      const CUSTOMERS = ["🙂", "😋", "🤤", "😮", "🥹", "😎", "😆"];
-
-      const els = {
-        score: document.getElementById("score"),
-        time: document.getElementById("time"),
-        served: document.getElementById("served"),
-        combo: document.getElementById("combo"),
-        mistakes: document.getElementById("mistakes"),
-        customerFace: document.getElementById("customerFace"),
-        orderTitle: document.getElementById("orderTitle"),
-        orderCopy: document.getElementById("orderCopy"),
-        patienceFill: document.getElementById("patienceFill"),
-        orderList: document.getElementById("orderList"),
-        pantry: document.getElementById("pantry"),
-        stations: document.getElementById("stations"),
-        tray: document.getElementById("tray"),
-        message: document.getElementById("message"),
-        serveButton: document.getElementById("serveButton"),
-        clearButton: document.getElementById("clearButton"),
-        startButton: document.getElementById("startButton"),
-        restartButton: document.getElementById("restartButton"),
-        startOverlay: document.getElementById("startOverlay"),
-        endOverlay: document.getElementById("endOverlay"),
-        endTitle: document.getElementById("endTitle"),
-        endText: document.getElementById("endText"),
-      };
-
-      const state = {
-        running: false,
-        score: 0,
-        served: 0,
-        combo: 0,
-        mistakes: 0,
-        timeMs: 150000,
-        patienceMs: 42000,
-        maxPatienceMs: 42000,
-        order: MEALS[0],
-        stations: {},
-        tray: {},
-        pantry: [],
-        timer: null,
-        drag: null,
-        action: null,
-      };
-
-      function meal(season, icon, color, nutrition, foods) {
-        return { season, icon, color, nutrition, foods };
-      }
-
-      function food(slot, name, icon) {
-        return { id: `${slot}-${name}`, slot, name, icon };
-      }
-
-      function startGame() {
-        state.running = true;
-        state.score = 0;
-        state.served = 0;
-        state.combo = 0;
-        state.mistakes = 0;
-        state.timeMs = 150000;
-        els.startOverlay.classList.remove("show");
-        els.endOverlay.classList.remove("show");
-        newOrder();
-        clearInterval(state.timer);
-        state.timer = window.setInterval(tick, 100);
-        setMessage("재료를 조리대에 끌어다 놓으세요.");
-      }
-
-      function newOrder() {
-        state.order = MEALS[state.served % MEALS.length];
-        state.maxPatienceMs = Math.max(23000, 42000 - state.served * 950);
-        state.patienceMs = state.maxPatienceMs;
-        state.stations = {};
-        state.tray = {};
-        for (const cfg of SLOT_CONFIG) {
-          state.stations[cfg.key] = { slot: cfg.key, status: "empty", food: null, progress: 0, swipes: 0 };
-        }
-        const right = state.order.foods.map((item) => ({ ...item, correct: true, used: false }));
-        const decoys = shuffle(DECOYS.map((item) => ({ ...item, correct: false, used: false }))).slice(0, 4);
-        state.pantry = shuffle([...right, ...decoys]).map((item, index) => ({ ...item, dragId: `${index}-${item.id}` }));
-        document.documentElement.style.setProperty("--accent", state.order.color);
-        els.customerFace.textContent = CUSTOMERS[state.served % CUSTOMERS.length];
-        render();
-      }
-
-      function tick() {
-        if (!state.running) return;
-        state.timeMs -= 100;
-        state.patienceMs -= 100;
-        if (state.patienceMs <= 0) {
-          penalize("손님이 기다리다 나갔습니다.");
-          if (state.mistakes >= 5) finishGame();
-          else newOrder();
-        }
-        if (state.timeMs <= 0) finishGame();
-        renderHud();
-      }
-
-      function render() {
-        renderHud();
-        renderOrder();
-        renderPantry();
-        renderStations();
-        renderTray();
-      }
-
-      function renderHud() {
-        els.score.textContent = `${state.score.toLocaleString("ko-KR")}원`;
-        els.time.textContent = Math.max(0, Math.ceil(state.timeMs / 1000)).toString();
-        els.served.textContent = `${state.served}명`;
-        els.combo.textContent = state.combo.toString();
-        els.mistakes.textContent = `${state.mistakes}/5`;
-        els.orderTitle.textContent = `${state.order.icon} ${state.order.season} 제철 한 끼`;
-        els.orderCopy.textContent = state.order.nutrition;
-        els.patienceFill.style.width = `${Math.max(0, (state.patienceMs / state.maxPatienceMs) * 100)}%`;
-        els.serveButton.disabled = !state.running;
-        els.clearButton.disabled = !state.running;
-      }
-
-      function renderOrder() {
-        els.orderList.innerHTML = "";
-        for (const item of state.order.foods) {
-          const done = Boolean(state.tray[item.slot]);
-          const row = document.createElement("div");
-          row.className = `need ${done ? "done" : ""}`;
-          row.innerHTML = `
-            <span class="label">${slotLabel(item.slot)}</span>
-            <span class="name">${item.icon} ${item.name}</span>
-            <span class="check">${done ? "✓" : ""}</span>
-          `;
-          els.orderList.appendChild(row);
-        }
-      }
-
-      function renderPantry() {
-        els.pantry.innerHTML = "";
-        for (const item of state.pantry) {
-          const card = document.createElement("div");
-          card.className = `ingredient ${item.used ? "used" : ""}`;
-          card.dataset.dragType = "ingredient";
-          card.dataset.dragId = item.dragId;
-          card.innerHTML = `
-            <span class="emoji">${item.icon}</span>
-            <span><span class="name">${item.name}</span><span class="small">${slotLabel(item.slot)} 재료</span></span>
-          `;
-          if (!item.used) card.addEventListener("pointerdown", startDrag);
-          els.pantry.appendChild(card);
-        }
-      }
-
-      function renderStations() {
-        els.stations.innerHTML = "";
-        for (const cfg of SLOT_CONFIG) {
-          const station = state.stations[cfg.key];
-          const node = document.createElement("section");
-          node.className = `station ${station.status}`;
-          node.dataset.drop = "station";
-          node.dataset.slot = cfg.key;
-          const ready = station.status === "ready";
-          node.innerHTML = `
-            <div class="station-head">
-              <h3>${cfg.station}</h3>
-              <span class="emoji">${cfg.icon}</span>
-            </div>
-            <div class="station-target">
-              ${station.food ? `<div class="station-food"><span class="emoji">${station.food.icon}</span><span class="name">${station.food.name}</span><span class="small">${ready ? "완성 접시를 식판으로 끌기" : "조리 동작 수행"}</span></div>` : `<div><span class="small">여기에</span><br><strong>${slotLabel(cfg.key)} 재료 드롭</strong></div>`}
-            </div>
-            <div>
-              ${station.food && !ready ? actionMarkup(cfg, station) : ""}
-              ${ready ? `<div class="dish" data-drag-type="dish" data-slot="${cfg.key}">${station.food.icon} ${station.food.name}</div>` : ""}
-            </div>
-          `;
-          els.stations.appendChild(node);
-        }
-
-        document.querySelectorAll(".action-pad").forEach((pad) => {
-          pad.addEventListener("pointerdown", actionDown);
-          pad.addEventListener("pointermove", actionMove);
-          pad.addEventListener("pointerup", actionUp);
-          pad.addEventListener("pointercancel", actionUp);
-        });
-        document.querySelectorAll(".dish").forEach((dish) => dish.addEventListener("pointerdown", startDrag));
-      }
-
-      function actionMarkup(cfg, station) {
-        return `
-          <div class="action-pad" data-action="${cfg.action}" data-slot="${cfg.key}">
-            <span class="action-title">${cfg.actionName}</span>
-            <span class="action-help">${cfg.help}</span>
-            <div class="progress"><div class="progress-fill" style="width:${Math.min(100, station.progress)}%"></div></div>
-          </div>
-        `;
-      }
-
-      function renderTray() {
-        els.tray.innerHTML = "";
-        for (const cfg of SLOT_CONFIG) {
-          const item = state.tray[cfg.key];
-          const slot = document.createElement("div");
-          slot.className = `slot ${item ? "filled" : ""}`;
-          slot.dataset.drop = "tray";
-          slot.dataset.slot = cfg.key;
-          slot.innerHTML = `
-            <span class="label">${cfg.label}</span>
-            <span class="name">${item ? `${item.icon} ${item.name}` : "비어 있음"}</span>
-            <span class="check">${item ? "✓" : ""}</span>
-          `;
-          els.tray.appendChild(slot);
-        }
-      }
-
-      function startDrag(event) {
-        if (!state.running) return;
-        const target = event.currentTarget;
-        const type = target.dataset.dragType;
-        const data = type === "ingredient"
-          ? state.pantry.find((item) => item.dragId === target.dataset.dragId)
-          : state.stations[target.dataset.slot].food;
-        if (!data) return;
-
-        const ghost = document.createElement("div");
-        ghost.className = "drag-ghost";
-        ghost.textContent = `${data.icon} ${data.name}`;
-        document.body.appendChild(ghost);
-        state.drag = { type, data, fromSlot: target.dataset.slot || null, ghost };
-        moveGhost(event);
-        target.setPointerCapture?.(event.pointerId);
-        window.addEventListener("pointermove", moveGhost);
-        window.addEventListener("pointerup", endDrag, { once: true });
-        event.preventDefault();
-      }
-
-      function moveGhost(event) {
-        if (!state.drag) return;
-        state.drag.ghost.style.left = `${event.clientX}px`;
-        state.drag.ghost.style.top = `${event.clientY}px`;
-      }
-
-      function endDrag(event) {
-        window.removeEventListener("pointermove", moveGhost);
-        const drag = state.drag;
-        state.drag = null;
-        if (!drag) return;
-        drag.ghost.remove();
-        const drop = document.elementFromPoint(event.clientX, event.clientY)?.closest("[data-drop]");
-        if (!drop) return;
-        if (drag.type === "ingredient" && drop.dataset.drop === "station") {
-          dropIngredient(drag.data, drop.dataset.slot);
-        }
-        if (drag.type === "dish" && drop.dataset.drop === "tray") {
-          dropDish(drag.fromSlot, drop.dataset.slot);
-        }
-      }
-
-      function dropIngredient(item, stationSlot) {
-        const station = state.stations[stationSlot];
-        if (station.status !== "empty") {
-          setMessage("이미 재료가 올라간 조리대입니다.");
-          return;
-        }
-        if (item.slot !== stationSlot || !item.correct) {
-          penalize(`${item.name}은 이 조리대 재료가 아닙니다.`);
-          render();
-          return;
-        }
-        station.status = "loaded";
-        station.food = item;
-        station.progress = 0;
-        item.used = true;
-        setMessage(`${item.name} 준비 완료. 이제 ${slotConfig(stationSlot).help}`);
-        render();
-      }
-
-      function dropDish(fromSlot, traySlot) {
-        const station = state.stations[fromSlot];
-        if (!station || station.status !== "ready" || !station.food) return;
-        if (fromSlot !== traySlot) {
-          penalize("식판 칸이 맞지 않습니다.");
-          render();
-          return;
-        }
-        state.tray[traySlot] = station.food;
-        station.status = "empty";
-        station.food = null;
-        station.progress = 0;
-        setMessage(`${slotLabel(traySlot)} 담기 완료.`);
-        render();
-      }
-
-      function actionDown(event) {
-        if (!state.running) return;
-        const pad = event.currentTarget;
-        const cfg = slotConfig(pad.dataset.slot);
-        const station = state.stations[cfg.key];
-        state.action = {
-          slot: cfg.key,
-          action: cfg.action,
-          pad,
-          lastX: event.clientX,
-          lastY: event.clientY,
-          dir: 0,
-          total: 0,
-          holdTimer: null,
-        };
-        pad.classList.add("active");
-        pad.setPointerCapture?.(event.pointerId);
-        if (cfg.action === "hold") {
-          station.progress = 12;
-          state.action.holdTimer = window.setTimeout(() => completeAction(cfg.key), 1200);
-          animateHold(cfg.key, 12);
-        }
-        event.preventDefault();
-      }
-
-      function actionMove(event) {
-        if (!state.action) return;
-        const cfg = slotConfig(state.action.slot);
-        const station = state.stations[cfg.key];
-        if (station.status !== "loaded") return;
-        const dx = event.clientX - state.action.lastX;
-        const dy = event.clientY - state.action.lastY;
-        const absX = Math.abs(dx);
-        const absY = Math.abs(dy);
-
-        if (cfg.action === "stir") {
-          state.action.total += Math.hypot(dx, dy);
-          station.progress = Math.min(100, state.action.total / 6);
-          updateActionProgress();
-          if (station.progress >= 100) completeAction(cfg.key);
-        }
-
-        if (cfg.action === "flip" || cfg.action === "shake") {
-          const dir = Math.sign(dx);
-          if (absX > 45 && dir && dir !== state.action.dir) {
-            state.action.dir = dir;
-            station.swipes += 1;
-            station.progress = (station.swipes / cfg.need) * 100;
-            updateActionProgress();
-            state.action.lastX = event.clientX;
-            if (station.swipes >= cfg.need) completeAction(cfg.key);
-          }
-        }
-
-        if (cfg.action === "slice") {
-          const dir = Math.sign(dy);
-          if (absY > 36 && dir && dir !== state.action.dir) {
-            state.action.dir = dir;
-            station.swipes += 1;
-            station.progress = (station.swipes / cfg.need) * 100;
-            updateActionProgress();
-            state.action.lastY = event.clientY;
-            if (station.swipes >= cfg.need) completeAction(cfg.key);
-          }
-        }
-
-        state.action.lastX = event.clientX;
-        state.action.lastY = event.clientY;
-      }
-
-      function actionUp(event) {
-        if (!state.action) return;
-        if (state.action.holdTimer) clearTimeout(state.action.holdTimer);
-        state.action = null;
-        document.querySelectorAll(".action-pad.active").forEach((pad) => pad.classList.remove("active"));
-        event.preventDefault();
-      }
-
-      function animateHold(slot, value) {
-        const station = state.stations[slot];
-        if (!state.action || state.action.slot !== slot || station.status !== "loaded") return;
-        station.progress = Math.min(100, value);
-        updateActionProgress();
-        if (value < 100) window.setTimeout(() => animateHold(slot, value + 8), 90);
-      }
-
-      function updateActionProgress() {
-        if (!state.action) return;
-        const station = state.stations[state.action.slot];
-        const fill = state.action.pad?.querySelector(".progress-fill");
-        if (fill) fill.style.width = `${Math.min(100, station.progress)}%`;
-      }
-
-      function completeAction(slot) {
-        const station = state.stations[slot];
-        if (!station || station.status !== "loaded") return;
-        station.status = "ready";
-        station.progress = 100;
-        station.swipes = 0;
-        state.combo += 1;
-        setMessage(`${station.food.name} 완성! 초록 접시를 식판으로 끌어 담으세요.`);
-        render();
-      }
-
-      function serve() {
-        if (!state.running) return;
-        if (Object.keys(state.tray).length < SLOT_CONFIG.length) {
-          setMessage(`아직 ${SLOT_CONFIG.length - Object.keys(state.tray).length}개가 부족합니다.`);
-          return;
-        }
-        const patienceBonus = Math.round((state.patienceMs / state.maxPatienceMs) * 420);
-        const earned = 1200 + patienceBonus + state.combo * 80;
-        state.score += earned;
-        state.served += 1;
-        state.timeMs += 5500;
-        setMessage(`서빙 성공! +${earned.toLocaleString("ko-KR")}원 · 다음 손님 입장`);
-        newOrder();
-      }
-
-      function clearTray() {
-        if (!state.running) return;
-        state.tray = {};
-        state.combo = 0;
-        setMessage("식판을 비웠습니다.");
-        render();
-      }
-
-      function penalize(text) {
-        state.mistakes += 1;
-        state.combo = 0;
-        state.score = Math.max(0, state.score - 180);
-        setMessage(`${text} 실수 ${state.mistakes}/5`);
-        if (state.mistakes >= 5) finishGame();
-      }
-
-      function finishGame() {
-        if (!state.running) return;
-        state.running = false;
-        clearInterval(state.timer);
-        els.endTitle.textContent = state.score >= 9000 ? "제철요리 장인" : state.score >= 5200 ? "영업 성공" : "영업 종료";
-        els.endText.textContent = `매출 ${state.score.toLocaleString("ko-KR")}원 · 손님 ${state.served}명`;
-        els.endOverlay.classList.add("show");
-        render();
-      }
-
-      function setMessage(text) {
-        els.message.textContent = text;
-      }
-
-      function slotConfig(slot) {
-        return SLOT_CONFIG.find((cfg) => cfg.key === slot);
-      }
-
-      function slotLabel(slot) {
-        return slotConfig(slot).label;
-      }
-
-      function shuffle(list) {
-        const copy = [...list];
-        for (let i = copy.length - 1; i > 0; i -= 1) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [copy[i], copy[j]] = [copy[j], copy[i]];
-        }
-        return copy;
-      }
-
-      els.startButton.addEventListener("click", startGame);
-      els.restartButton.addEventListener("click", startGame);
-      els.serveButton.addEventListener("click", serve);
-      els.clearButton.addEventListener("click", clearTray);
-
-      newOrder();
-    </script>
-  </body>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>슈식 제철요리 실습실</title>
+<style>
+:root {
+--ink: #2b2118;
+--muted: #766959;
+--paper: #fff6e7;
+--panel: rgba(255, 253, 247, 0.96);
+--line: #ead6b9;
+--accent: #e45d45;
+--gold: #f5b23c;
+--green: #2f9e63;
+--blue: #3d8bcc;
+--bad: #d84f4f;
+}
+* {
+box-sizing: border-box;
+}
+html,
+body {
+margin: 0;
+height: 100%;
+overflow: hidden;
+}
+body {
+color: var(--ink);
+background:
+linear-gradient(rgba(120, 86, 46, 0.06) 1px, transparent 1px),
+linear-gradient(90deg, rgba(120, 86, 46, 0.06) 1px, transparent 1px),
+radial-gradient(circle at 14% 12%, rgba(245, 178, 60, 0.3), transparent 28%),
+radial-gradient(circle at 84% 10%, rgba(228, 93, 69, 0.18), transparent 30%),
+#fff2dd;
+background-size: 34px 34px, 34px 34px, auto, auto, auto;
+font-family:
+Pretendard,
+"Noto Sans KR",
+system-ui,
+-apple-system,
+BlinkMacSystemFont,
+"Segoe UI",
+sans-serif;
+}
+button {
+font: inherit;
+}
+.app {
+width: min(1240px, 100%);
+height: 100dvh;
+margin: 0 auto;
+padding: 10px;
+display: grid;
+grid-template-rows: auto minmax(0, 1fr);
+gap: 8px;
+overflow: hidden;
+}
+.top {
+display: grid;
+grid-template-columns: 1fr auto;
+gap: 10px;
+align-items: end;
+}
+.kicker {
+margin: 0 0 5px;
+color: var(--accent);
+font-weight: 950;
+font-size: 0.78rem;
+}
+h1,
+h2,
+h3,
+p {
+margin-top: 0;
+}
+h1 {
+margin-bottom: 0;
+font-size: clamp(1.5rem, 3vw, 2.45rem);
+line-height: 1;
+letter-spacing: 0;
+}
+.hud {
+display: grid;
+grid-template-columns: repeat(5, minmax(72px, 1fr));
+gap: 6px;
+min-width: min(560px, 100%);
+}
+.metric,
+.panel,
+.station,
+.ingredient,
+.slot {
+border: 1px solid var(--line);
+border-radius: 8px;
+background: var(--panel);
+box-shadow: 0 12px 26px rgba(77, 47, 23, 0.1);
+}
+.metric {
+padding: 7px 9px;
+}
+.metric span {
+display: block;
+color: var(--muted);
+font-size: 0.68rem;
+font-weight: 850;
+}
+.metric strong {
+display: block;
+margin-top: 3px;
+font-size: 1.02rem;
+line-height: 1;
+}
+.game {
+display: grid;
+grid-template-rows: auto minmax(0, 1fr) auto;
+gap: 8px;
+min-height: 0;
+overflow: hidden;
+}
+.panel {
+padding: 10px;
+min-height: 0;
+overflow: hidden;
+}
+.order-strip,
+.middle,
+.dock {
+display: grid;
+gap: 8px;
+min-height: 0;
+}
+.order-strip {
+grid-template-columns: minmax(220px, 0.7fr) minmax(360px, 1.3fr);
+}
+.middle {
+grid-template-rows: minmax(0, 1fr) auto;
+}
+.dock {
+grid-template-columns: minmax(320px, 1.15fr) minmax(280px, 0.85fr) minmax(150px, 0.28fr);
+align-items: stretch;
+}
+.pantry-panel,
+.tray-panel {
+min-height: 0;
+}
+.customer {
+display: grid;
+grid-template-columns: auto 1fr;
+gap: 9px;
+align-items: center;
+}
+.face {
+width: 52px;
+height: 52px;
+display: grid;
+place-items: center;
+border-radius: 8px;
+background: #ffe0ba;
+font-size: 1.78rem;
+box-shadow: inset 0 0 0 2px rgba(43, 33, 24, 0.08);
+}
+.order-title {
+margin: 0;
+font-size: 1.08rem;
+line-height: 1.1;
+}
+.order-copy {
+margin: 4px 0 0;
+color: var(--muted);
+font-weight: 780;
+line-height: 1.22;
+font-size: 0.8rem;
+}
+.bar {
+height: 9px;
+border-radius: 999px;
+background: #f0dfc4;
+overflow: hidden;
+margin-top: 8px;
+}
+.fill {
+width: 100%;
+height: 100%;
+border-radius: inherit;
+background: linear-gradient(90deg, var(--green), var(--gold));
+transition: width 100ms linear;
+}
+.order-list,
+.pantry,
+.tray-list {
+display: grid;
+gap: 6px;
+}
+.order-list {
+grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+.pantry {
+grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.tray-list {
+grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+.need {
+display: grid;
+grid-template-columns: 1fr auto;
+gap: 6px;
+align-items: center;
+min-height: 44px;
+border: 1px solid var(--line);
+border-radius: 8px;
+background: #fff;
+padding: 7px 8px;
+}
+.need.done {
+border-color: rgba(47, 158, 99, 0.38);
+background: #edf9e9;
+}
+.label {
+color: var(--muted);
+font-size: 0.68rem;
+font-weight: 900;
+}
+.name {
+font-weight: 950;
+word-break: keep-all;
+font-size: 0.82rem;
+line-height: 1.15;
+}
+.check {
+width: 22px;
+height: 22px;
+display: grid;
+place-items: center;
+border-radius: 999px;
+background: #f1e2c9;
+color: var(--muted);
+font-weight: 950;
+}
+.done .check,
+.slot.filled .check {
+background: var(--green);
+color: #fff;
+}
+.ingredient {
+min-height: 48px;
+display: grid;
+grid-template-columns: auto 1fr;
+gap: 7px;
+align-items: center;
+padding: 7px 8px;
+cursor: grab;
+touch-action: none;
+user-select: none;
+}
+.ingredient.used {
+opacity: 0.42;
+}
+.emoji {
+font-size: 1.35rem;
+}
+.small {
+display: block;
+color: var(--muted);
+font-size: 0.66rem;
+font-weight: 850;
+}
+.stations {
+display: grid;
+grid-template-columns: repeat(5, minmax(112px, 1fr));
+gap: 8px;
+min-height: 0;
+}
+.station {
+min-height: 0;
+padding: 8px;
+display: grid;
+grid-template-rows: auto minmax(68px, 1fr) auto;
+gap: 6px;
+}
+.station.loaded {
+border-color: rgba(61, 139, 204, 0.5);
+background: #f2f9ff;
+}
+.station.ready {
+border-color: rgba(47, 158, 99, 0.6);
+background: #effbec;
+}
+.station-head {
+display: flex;
+justify-content: space-between;
+align-items: center;
+gap: 8px;
+}
+.station h3 {
+margin: 0;
+font-size: 0.88rem;
+}
+.station-target {
+min-height: 72px;
+border: 2px dashed #dec8aa;
+border-radius: 8px;
+background: #fffaf0;
+display: grid;
+place-items: center;
+padding: 8px;
+text-align: center;
+}
+.station.loaded .station-target,
+.station.ready .station-target {
+border-style: solid;
+border-color: rgba(43, 33, 24, 0.08);
+}
+.station-food {
+display: grid;
+gap: 3px;
+place-items: center;
+}
+.station-food .emoji {
+font-size: 1.65rem;
+}
+.action-pad {
+min-height: 62px;
+border-radius: 8px;
+background: #fff;
+border: 1px solid var(--line);
+padding: 7px;
+text-align: center;
+touch-action: none;
+user-select: none;
+}
+.action-pad.active {
+background: #fff7e2;
+}
+.action-title {
+display: block;
+font-weight: 950;
+}
+.action-help {
+display: block;
+margin-top: 3px;
+color: var(--muted);
+font-size: 0.68rem;
+font-weight: 820;
+line-height: 1.25;
+}
+.progress {
+height: 10px;
+margin-top: 7px;
+border-radius: 999px;
+background: #ecdcc4;
+overflow: hidden;
+}
+.progress-fill {
+height: 100%;
+width: 0%;
+background: var(--blue);
+border-radius: inherit;
+}
+.station.ready .progress-fill {
+background: var(--green);
+}
+.dish {
+margin-top: 6px;
+min-height: 30px;
+border-radius: 8px;
+background: var(--green);
+color: #fff;
+display: grid;
+place-items: center;
+font-weight: 950;
+cursor: grab;
+touch-action: none;
+user-select: none;
+}
+.slot {
+min-height: 48px;
+display: grid;
+grid-template-columns: 1fr auto;
+gap: 6px;
+align-items: center;
+padding: 7px 8px;
+border-style: dashed;
+}
+.slot.filled {
+border-style: solid;
+border-color: rgba(47, 158, 99, 0.38);
+background: #edf9e9;
+}
+.message {
+min-height: 42px;
+border: 1px solid var(--line);
+border-radius: 8px;
+background: #fff;
+padding: 9px 10px;
+color: var(--muted);
+font-weight: 850;
+line-height: 1.28;
+font-size: 0.85rem;
+}
+.controls {
+display: grid;
+grid-template-columns: 1fr;
+gap: 8px;
+}
+.primary,
+.ghost {
+min-height: 42px;
+border-radius: 8px;
+border: 0;
+cursor: pointer;
+font-weight: 950;
+}
+.primary {
+background: var(--ink);
+color: #fff;
+}
+.ghost {
+border: 1px solid var(--line);
+background: #fff;
+color: var(--ink);
+}
+.primary:disabled,
+.ghost:disabled {
+opacity: 0.44;
+cursor: not-allowed;
+}
+.drag-ghost {
+position: fixed;
+z-index: 30;
+pointer-events: none;
+transform: translate(-50%, -50%);
+min-width: 132px;
+border-radius: 8px;
+background: #fff;
+border: 1px solid var(--line);
+box-shadow: 0 18px 40px rgba(43, 33, 24, 0.24);
+padding: 10px 12px;
+font-weight: 950;
+}
+.overlay {
+position: fixed;
+inset: 0;
+display: none;
+place-items: center;
+padding: 20px;
+background: rgba(43, 33, 24, 0.42);
+backdrop-filter: blur(8px);
+z-index: 20;
+}
+.overlay.show {
+display: grid;
+}
+.modal {
+width: min(500px, 100%);
+border: 1px solid var(--line);
+border-radius: 8px;
+background: var(--panel);
+padding: 24px;
+text-align: center;
+box-shadow: 0 22px 54px rgba(43, 33, 24, 0.24);
+}
+.modal h2 {
+margin-bottom: 10px;
+}
+.modal p {
+margin: 0 0 18px;
+color: var(--muted);
+font-weight: 800;
+line-height: 1.5;
+}
+.modal .primary {
+width: 100%;
+}
+.panel h2 {
+margin-bottom: 8px;
+font-size: 0.98rem;
+}
+@media (max-width: 1040px) {
+.top {
+grid-template-columns: 1fr;
+}
+.hud {
+min-width: 0;
+}
+.order-strip {
+grid-template-columns: minmax(210px, 0.75fr) minmax(320px, 1.25fr);
+}
+.dock {
+grid-template-columns: minmax(280px, 1fr) minmax(260px, 0.9fr) 130px;
+}
+.stations {
+grid-template-columns: repeat(5, minmax(100px, 1fr));
+}
+}
+@media (max-width: 560px) {
+.app {
+padding: 7px;
+gap: 6px;
+}
+.top {
+gap: 6px;
+}
+.kicker {
+display: none;
+}
+h1 {
+font-size: 1.25rem;
+}
+.hud {
+grid-template-columns: repeat(5, minmax(0, 1fr));
+gap: 4px;
+}
+.metric {
+padding: 5px 4px;
+}
+.metric span {
+font-size: 0.58rem;
+}
+.metric strong {
+font-size: 0.78rem;
+}
+.order-strip {
+grid-template-columns: 0.8fr 1.2fr;
+gap: 6px;
+}
+.face {
+width: 42px;
+height: 42px;
+font-size: 1.4rem;
+}
+.order-title {
+font-size: 0.88rem;
+}
+.order-copy {
+display: none;
+}
+.bar {
+margin-top: 5px;
+}
+.panel {
+padding: 7px;
+}
+.panel h2 {
+margin-bottom: 5px;
+font-size: 0.78rem;
+}
+.order-list {
+grid-template-columns: repeat(5, minmax(0, 1fr));
+gap: 4px;
+}
+.need,
+.slot {
+min-height: 36px;
+padding: 5px 5px;
+}
+.label {
+font-size: 0.55rem;
+}
+.name {
+font-size: 0.68rem;
+}
+.check {
+width: 16px;
+height: 16px;
+font-size: 0.65rem;
+}
+.stations {
+grid-template-columns: repeat(5, minmax(0, 1fr));
+gap: 5px;
+}
+.station {
+padding: 5px;
+grid-template-rows: auto minmax(48px, 1fr) auto;
+gap: 4px;
+}
+.station h3 {
+font-size: 0.68rem;
+}
+.station-head .emoji {
+font-size: 0.95rem;
+}
+.station-target {
+min-height: 52px;
+padding: 4px;
+}
+.station-food .emoji {
+font-size: 1.15rem;
+}
+.action-pad {
+min-height: 48px;
+padding: 5px;
+}
+.action-title {
+font-size: 0.68rem;
+}
+.action-help {
+font-size: 0.55rem;
+}
+.progress {
+height: 7px;
+margin-top: 5px;
+}
+.dish {
+min-height: 24px;
+font-size: 0.68rem;
+}
+.dock {
+grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+grid-template-areas:
+"pantry tray"
+"controls controls";
+gap: 6px;
+}
+.pantry-panel {
+grid-area: pantry;
+}
+.tray-panel {
+grid-area: tray;
+}
+.controls {
+grid-area: controls;
+grid-template-columns: 1fr 1fr;
+gap: 6px;
+}
+.pantry {
+grid-template-columns: repeat(3, minmax(0, 1fr));
+gap: 4px;
+}
+.tray-list {
+grid-template-columns: repeat(5, minmax(0, 1fr));
+gap: 4px;
+}
+.ingredient,
+.slot {
+min-height: 36px;
+padding: 5px;
+gap: 4px;
+}
+.emoji {
+font-size: 1rem;
+}
+.small {
+display: none;
+}
+.message {
+min-height: 34px;
+padding: 6px 7px;
+font-size: 0.7rem;
+}
+.primary,
+.ghost {
+min-height: 36px;
+font-size: 0.82rem;
+}
+}
+</style>
+</head>
+<body>
+<main class="app">
+<header class="top">
+<div>
+<p class="kicker">드래그 · 젓기 · 썰기 · 길게 누르기 · 뒤집기</p>
+<h1>슈식 제철요리 실습실</h1>
+</div>
+<section class="hud" aria-label="게임 상태">
+<div class="metric"><span>매출</span><strong id="score">0원</strong></div>
+<div class="metric"><span>시간</span><strong id="time">150</strong></div>
+<div class="metric"><span>손님</span><strong id="served">0명</strong></div>
+<div class="metric"><span>콤보</span><strong id="combo">0</strong></div>
+<div class="metric"><span>실수</span><strong id="mistakes">0/5</strong></div>
+</section>
+</header>
+<section class="game">
+<section class="order-strip">
+<section class="panel">
+<div class="customer">
+<div class="face" id="customerFace">🙂</div>
+<div>
+<h2 class="order-title" id="orderTitle">봄 제철 한 끼</h2>
+<p class="order-copy" id="orderCopy">주문 대기 중</p>
+</div>
+</div>
+<div class="bar" aria-hidden="true"><div class="fill" id="patienceFill"></div></div>
+</section>
+<section class="panel">
+<h2>주문서</h2>
+<div class="order-list" id="orderList"></div>
+</section>
+</section>
+<section class="middle">
+<section class="stations" id="stations"></section>
+<div class="message" id="message">재료를 조리대에 끌어다 놓고, 조리 동작을 수행하세요.</div>
+</section>
+<section class="dock">
+<section class="panel pantry-panel">
+<h2>재료 냉장고</h2>
+<div class="pantry" id="pantry"></div>
+</section>
+<section class="panel tray-panel">
+<h2>식판</h2>
+<div class="tray-list" id="tray"></div>
+</section>
+<section class="controls">
+<button class="primary" id="serveButton" type="button">서빙</button>
+<button class="ghost" id="clearButton" type="button">비우기</button>
+</section>
+</section>
+</section>
+</main>
+<div class="overlay show" id="startOverlay">
+<div class="modal">
+<h2>진짜 손을 써서 요리하기</h2>
+<p>재료를 끌어 조리대에 올리고, 각 조리대의 동작을 수행한 뒤 완성 접시를 식판으로 끌어 담으세요.</p>
+<button class="primary" id="startButton" type="button">실습 시작</button>
+</div>
+</div>
+<div class="overlay" id="endOverlay">
+<div class="modal">
+<h2 id="endTitle">영업 종료</h2>
+<p id="endText">오늘 매출 0원</p>
+<button class="primary" id="restartButton" type="button">다시 하기</button>
+</div>
+</div>
+<script>
+"use strict";
+const SLOT_CONFIG = [
+{ key: "main", label: "메인", station: "불판", icon: "🔥", action: "flip", actionName: "뒤집기", help: "좌우로 크게 4번 문지르기", need: 4 },
+{ key: "rice", label: "밥", station: "밥솥", icon: "🍚", action: "hold", actionName: "뜸들이기", help: "1.2초 동안 길게 누르기", need: 100 },
+{ key: "soup", label: "국", station: "냄비", icon: "🥣", action: "stir", actionName: "젓기", help: "냄비 위를 계속 빙빙 젓기", need: 100 },
+{ key: "side", label: "반찬", station: "도마", icon: "🔪", action: "slice", actionName: "칼질", help: "위아래로 5번 썰기", need: 5 },
+{ key: "dessert", label: "후식", station: "과일볼", icon: "🍓", action: "shake", actionName: "담기", help: "좌우로 4번 흔들기", need: 4 },
+];
+const MEALS = [
+meal("봄", "🌱", "#76a943", "남 710 kcal · 단백질 49g / 여 560 kcal · 단백질 38g", [
+food("main", "쭈꾸미볶음", "🐙"),
+food("rice", "잡곡밥", "🍚"),
+food("soup", "바지락냉이국", "🥣"),
+food("side", "달래무침", "🥬"),
+food("dessert", "딸기", "🍓"),
+]),
+meal("여름", "☀️", "#3e9bd2", "남 765 kcal · 단백질 43g / 여 623 kcal · 단백질 36g", [
+food("main", "오징어·가지볶음", "🦑"),
+food("rice", "잡곡밥", "🍚"),
+food("soup", "오이냉국", "🥒"),
+food("side", "토마토", "🍅"),
+food("dessert", "수박", "🍉"),
+]),
+meal("가을", "🍁", "#c7832f", "남 820 kcal · 단백질 42g / 여 720 kcal · 단백질 37g", [
+food("main", "고등어구이", "🐟"),
+food("rice", "백미밥", "🍚"),
+food("soup", "배추된장국", "🥣"),
+food("side", "버섯볶음", "🍄"),
+food("dessert", "단호박·사과", "🍎"),
+]),
+meal("겨울", "❄️", "#d6655e", "남 약 835 kcal · 단백질 42g / 여 약 650 kcal · 단백질 34g", [
+food("main", "고등어구이", "🐟"),
+food("rice", "현미밥", "🍚"),
+food("soup", "굴미역국", "🦪"),
+food("side", "시금치나물·김치", "🥬"),
+food("dessert", "감귤", "🍊"),
+]),
+];
+const DECOYS = [
+food("main", "하남쭈꾸미", "🐙"),
+food("rice", "현미귀리밥", "🍚"),
+food("soup", "조개국·미역국", "🥣"),
+food("side", "부추무침", "🥗"),
+food("dessert", "방울토마토", "🍅"),
+food("side", "애호박볶음", "🥒"),
+food("main", "꽁치·삼치구이", "🐟"),
+food("dessert", "오렌지 과일컵", "🍊"),
+];
+const CUSTOMERS = ["🙂", "😋", "🤤", "😮", "🥹", "😎", "😆"];
+const els = {
+score: document.getElementById("score"),
+time: document.getElementById("time"),
+served: document.getElementById("served"),
+combo: document.getElementById("combo"),
+mistakes: document.getElementById("mistakes"),
+customerFace: document.getElementById("customerFace"),
+orderTitle: document.getElementById("orderTitle"),
+orderCopy: document.getElementById("orderCopy"),
+patienceFill: document.getElementById("patienceFill"),
+orderList: document.getElementById("orderList"),
+pantry: document.getElementById("pantry"),
+stations: document.getElementById("stations"),
+tray: document.getElementById("tray"),
+message: document.getElementById("message"),
+serveButton: document.getElementById("serveButton"),
+clearButton: document.getElementById("clearButton"),
+startButton: document.getElementById("startButton"),
+restartButton: document.getElementById("restartButton"),
+startOverlay: document.getElementById("startOverlay"),
+endOverlay: document.getElementById("endOverlay"),
+endTitle: document.getElementById("endTitle"),
+endText: document.getElementById("endText"),
+};
+const state = {
+running: false,
+score: 0,
+served: 0,
+combo: 0,
+mistakes: 0,
+timeMs: 150000,
+patienceMs: 42000,
+maxPatienceMs: 42000,
+order: MEALS[0],
+stations: {},
+tray: {},
+pantry: [],
+timer: null,
+drag: null,
+action: null,
+};
+function meal(season, icon, color, nutrition, foods) {
+return { season, icon, color, nutrition, foods };
+}
+function food(slot, name, icon) {
+return { id: `${slot}-${name}`, slot, name, icon };
+}
+function startGame() {
+state.running = true;
+state.score = 0;
+state.served = 0;
+state.combo = 0;
+state.mistakes = 0;
+state.timeMs = 150000;
+els.startOverlay.classList.remove("show");
+els.endOverlay.classList.remove("show");
+newOrder();
+clearInterval(state.timer);
+state.timer = window.setInterval(tick, 100);
+setMessage("재료를 조리대에 끌어다 놓으세요.");
+}
+function newOrder() {
+state.order = MEALS[state.served % MEALS.length];
+state.maxPatienceMs = Math.max(23000, 42000 - state.served * 950);
+state.patienceMs = state.maxPatienceMs;
+state.stations = {};
+state.tray = {};
+for (const cfg of SLOT_CONFIG) {
+state.stations[cfg.key] = { slot: cfg.key, status: "empty", food: null, progress: 0, swipes: 0 };
+}
+const right = state.order.foods.map((item) => ({ ...item, correct: true, used: false }));
+const decoys = shuffle(DECOYS.map((item) => ({ ...item, correct: false, used: false }))).slice(0, 4);
+state.pantry = shuffle([...right, ...decoys]).map((item, index) => ({ ...item, dragId: `${index}-${item.id}` }));
+document.documentElement.style.setProperty("--accent", state.order.color);
+els.customerFace.textContent = CUSTOMERS[state.served % CUSTOMERS.length];
+render();
+}
+function tick() {
+if (!state.running) return;
+state.timeMs -= 100;
+state.patienceMs -= 100;
+if (state.patienceMs <= 0) {
+penalize("손님이 기다리다 나갔습니다.");
+if (state.mistakes >= 5) finishGame();
+else newOrder();
+}
+if (state.timeMs <= 0) finishGame();
+renderHud();
+}
+function render() {
+renderHud();
+renderOrder();
+renderPantry();
+renderStations();
+renderTray();
+}
+function renderHud() {
+els.score.textContent = `${state.score.toLocaleString("ko-KR")}원`;
+els.time.textContent = Math.max(0, Math.ceil(state.timeMs / 1000)).toString();
+els.served.textContent = `${state.served}명`;
+els.combo.textContent = state.combo.toString();
+els.mistakes.textContent = `${state.mistakes}/5`;
+els.orderTitle.textContent = `${state.order.icon} ${state.order.season} 제철 한 끼`;
+els.orderCopy.textContent = state.order.nutrition;
+els.patienceFill.style.width = `${Math.max(0, (state.patienceMs / state.maxPatienceMs) * 100)}%`;
+els.serveButton.disabled = !state.running;
+els.clearButton.disabled = !state.running;
+}
+function renderOrder() {
+els.orderList.innerHTML = "";
+for (const item of state.order.foods) {
+const done = Boolean(state.tray[item.slot]);
+const row = document.createElement("div");
+row.className = `need ${done ? "done" : ""}`;
+row.innerHTML = `
+<span class="label">${slotLabel(item.slot)}</span>
+<span class="name">${item.icon} ${item.name}</span>
+<span class="check">${done ? "✓" : ""}</span>
+`;
+els.orderList.appendChild(row);
+}
+}
+function renderPantry() {
+els.pantry.innerHTML = "";
+for (const item of state.pantry) {
+const card = document.createElement("div");
+card.className = `ingredient ${item.used ? "used" : ""}`;
+card.dataset.dragType = "ingredient";
+card.dataset.dragId = item.dragId;
+card.innerHTML = `
+<span class="emoji">${item.icon}</span>
+<span><span class="name">${item.name}</span><span class="small">${slotLabel(item.slot)} 재료</span></span>
+`;
+if (!item.used) card.addEventListener("pointerdown", startDrag);
+els.pantry.appendChild(card);
+}
+}
+function renderStations() {
+els.stations.innerHTML = "";
+for (const cfg of SLOT_CONFIG) {
+const station = state.stations[cfg.key];
+const node = document.createElement("section");
+node.className = `station ${station.status}`;
+node.dataset.drop = "station";
+node.dataset.slot = cfg.key;
+const ready = station.status === "ready";
+node.innerHTML = `
+<div class="station-head">
+<h3>${cfg.station}</h3>
+<span class="emoji">${cfg.icon}</span>
+</div>
+<div class="station-target">
+${station.food ? `<div class="station-food"><span class="emoji">${station.food.icon}</span><span class="name">${station.food.name}</span><span class="small">${ready ? "완성 접시를 식판으로 끌기" : "조리 동작 수행"}</span></div>` : `<div><span class="small">여기에</span><br><strong>${slotLabel(cfg.key)} 재료 드롭</strong></div>`}
+</div>
+<div>
+${station.food && !ready ? actionMarkup(cfg, station) : ""}
+${ready ? `<div class="dish" data-drag-type="dish" data-slot="${cfg.key}">${station.food.icon} ${station.food.name}</div>` : ""}
+</div>
+`;
+els.stations.appendChild(node);
+}
+document.querySelectorAll(".action-pad").forEach((pad) => {
+pad.addEventListener("pointerdown", actionDown);
+pad.addEventListener("pointermove", actionMove);
+pad.addEventListener("pointerup", actionUp);
+pad.addEventListener("pointercancel", actionUp);
+});
+document.querySelectorAll(".dish").forEach((dish) => dish.addEventListener("pointerdown", startDrag));
+}
+function actionMarkup(cfg, station) {
+return `
+<div class="action-pad" data-action="${cfg.action}" data-slot="${cfg.key}">
+<span class="action-title">${cfg.actionName}</span>
+<span class="action-help">${cfg.help}</span>
+<div class="progress"><div class="progress-fill" style="width:${Math.min(100, station.progress)}%"></div></div>
+</div>
+`;
+}
+function renderTray() {
+els.tray.innerHTML = "";
+for (const cfg of SLOT_CONFIG) {
+const item = state.tray[cfg.key];
+const slot = document.createElement("div");
+slot.className = `slot ${item ? "filled" : ""}`;
+slot.dataset.drop = "tray";
+slot.dataset.slot = cfg.key;
+slot.innerHTML = `
+<span class="label">${cfg.label}</span>
+<span class="name">${item ? `${item.icon} ${item.name}` : "비어 있음"}</span>
+<span class="check">${item ? "✓" : ""}</span>
+`;
+els.tray.appendChild(slot);
+}
+}
+function startDrag(event) {
+if (!state.running) return;
+const target = event.currentTarget;
+const type = target.dataset.dragType;
+const data = type === "ingredient"
+? state.pantry.find((item) => item.dragId === target.dataset.dragId)
+: state.stations[target.dataset.slot].food;
+if (!data) return;
+const ghost = document.createElement("div");
+ghost.className = "drag-ghost";
+ghost.textContent = `${data.icon} ${data.name}`;
+document.body.appendChild(ghost);
+state.drag = { type, data, fromSlot: target.dataset.slot || null, ghost };
+moveGhost(event);
+target.setPointerCapture?.(event.pointerId);
+window.addEventListener("pointermove", moveGhost);
+window.addEventListener("pointerup", endDrag, { once: true });
+event.preventDefault();
+}
+function moveGhost(event) {
+if (!state.drag) return;
+state.drag.ghost.style.left = `${event.clientX}px`;
+state.drag.ghost.style.top = `${event.clientY}px`;
+}
+function endDrag(event) {
+window.removeEventListener("pointermove", moveGhost);
+const drag = state.drag;
+state.drag = null;
+if (!drag) return;
+drag.ghost.remove();
+const drop = document.elementFromPoint(event.clientX, event.clientY)?.closest("[data-drop]");
+if (!drop) return;
+if (drag.type === "ingredient" && drop.dataset.drop === "station") {
+dropIngredient(drag.data, drop.dataset.slot);
+}
+if (drag.type === "dish" && drop.dataset.drop === "tray") {
+dropDish(drag.fromSlot, drop.dataset.slot);
+}
+}
+function dropIngredient(item, stationSlot) {
+const station = state.stations[stationSlot];
+if (station.status !== "empty") {
+setMessage("이미 재료가 올라간 조리대입니다.");
+return;
+}
+if (item.slot !== stationSlot || !item.correct) {
+penalize(`${item.name}은 이 조리대 재료가 아닙니다.`);
+render();
+return;
+}
+station.status = "loaded";
+station.food = item;
+station.progress = 0;
+item.used = true;
+setMessage(`${item.name} 준비 완료. 이제 ${slotConfig(stationSlot).help}`);
+render();
+}
+function dropDish(fromSlot, traySlot) {
+const station = state.stations[fromSlot];
+if (!station || station.status !== "ready" || !station.food) return;
+if (fromSlot !== traySlot) {
+penalize("식판 칸이 맞지 않습니다.");
+render();
+return;
+}
+state.tray[traySlot] = station.food;
+station.status = "empty";
+station.food = null;
+station.progress = 0;
+setMessage(`${slotLabel(traySlot)} 담기 완료.`);
+render();
+}
+function actionDown(event) {
+if (!state.running) return;
+const pad = event.currentTarget;
+const cfg = slotConfig(pad.dataset.slot);
+const station = state.stations[cfg.key];
+state.action = {
+slot: cfg.key,
+action: cfg.action,
+pad,
+lastX: event.clientX,
+lastY: event.clientY,
+dir: 0,
+total: 0,
+holdTimer: null,
+};
+pad.classList.add("active");
+pad.setPointerCapture?.(event.pointerId);
+if (cfg.action === "hold") {
+station.progress = 12;
+state.action.holdTimer = window.setTimeout(() => completeAction(cfg.key), 1200);
+animateHold(cfg.key, 12);
+}
+event.preventDefault();
+}
+function actionMove(event) {
+if (!state.action) return;
+const cfg = slotConfig(state.action.slot);
+const station = state.stations[cfg.key];
+if (station.status !== "loaded") return;
+const dx = event.clientX - state.action.lastX;
+const dy = event.clientY - state.action.lastY;
+const absX = Math.abs(dx);
+const absY = Math.abs(dy);
+if (cfg.action === "stir") {
+state.action.total += Math.hypot(dx, dy);
+station.progress = Math.min(100, state.action.total / 6);
+updateActionProgress();
+if (station.progress >= 100) completeAction(cfg.key);
+}
+if (cfg.action === "flip" || cfg.action === "shake") {
+const dir = Math.sign(dx);
+if (absX > 45 && dir && dir !== state.action.dir) {
+state.action.dir = dir;
+station.swipes += 1;
+station.progress = (station.swipes / cfg.need) * 100;
+updateActionProgress();
+state.action.lastX = event.clientX;
+if (station.swipes >= cfg.need) completeAction(cfg.key);
+}
+}
+if (cfg.action === "slice") {
+const dir = Math.sign(dy);
+if (absY > 36 && dir && dir !== state.action.dir) {
+state.action.dir = dir;
+station.swipes += 1;
+station.progress = (station.swipes / cfg.need) * 100;
+updateActionProgress();
+state.action.lastY = event.clientY;
+if (station.swipes >= cfg.need) completeAction(cfg.key);
+}
+}
+state.action.lastX = event.clientX;
+state.action.lastY = event.clientY;
+}
+function actionUp(event) {
+if (!state.action) return;
+if (state.action.holdTimer) clearTimeout(state.action.holdTimer);
+state.action = null;
+document.querySelectorAll(".action-pad.active").forEach((pad) => pad.classList.remove("active"));
+event.preventDefault();
+}
+function animateHold(slot, value) {
+const station = state.stations[slot];
+if (!state.action || state.action.slot !== slot || station.status !== "loaded") return;
+station.progress = Math.min(100, value);
+updateActionProgress();
+if (value < 100) window.setTimeout(() => animateHold(slot, value + 8), 90);
+}
+function updateActionProgress() {
+if (!state.action) return;
+const station = state.stations[state.action.slot];
+const fill = state.action.pad?.querySelector(".progress-fill");
+if (fill) fill.style.width = `${Math.min(100, station.progress)}%`;
+}
+function completeAction(slot) {
+const station = state.stations[slot];
+if (!station || station.status !== "loaded") return;
+station.status = "ready";
+station.progress = 100;
+station.swipes = 0;
+state.combo += 1;
+setMessage(`${station.food.name} 완성! 초록 접시를 식판으로 끌어 담으세요.`);
+render();
+}
+function serve() {
+if (!state.running) return;
+if (Object.keys(state.tray).length < SLOT_CONFIG.length) {
+setMessage(`아직 ${SLOT_CONFIG.length - Object.keys(state.tray).length}개가 부족합니다.`);
+return;
+}
+const patienceBonus = Math.round((state.patienceMs / state.maxPatienceMs) * 420);
+const earned = 1200 + patienceBonus + state.combo * 80;
+state.score += earned;
+state.served += 1;
+state.timeMs += 5500;
+setMessage(`서빙 성공! +${earned.toLocaleString("ko-KR")}원 · 다음 손님 입장`);
+newOrder();
+}
+function clearTray() {
+if (!state.running) return;
+state.tray = {};
+state.combo = 0;
+setMessage("식판을 비웠습니다.");
+render();
+}
+function penalize(text) {
+state.mistakes += 1;
+state.combo = 0;
+state.score = Math.max(0, state.score - 180);
+setMessage(`${text} 실수 ${state.mistakes}/5`);
+if (state.mistakes >= 5) finishGame();
+}
+function finishGame() {
+if (!state.running) return;
+state.running = false;
+clearInterval(state.timer);
+els.endTitle.textContent = state.score >= 9000 ? "제철요리 장인" : state.score >= 5200 ? "영업 성공" : "영업 종료";
+els.endText.textContent = `매출 ${state.score.toLocaleString("ko-KR")}원 · 손님 ${state.served}명`;
+els.endOverlay.classList.add("show");
+render();
+}
+function setMessage(text) {
+els.message.textContent = text;
+}
+function slotConfig(slot) {
+return SLOT_CONFIG.find((cfg) => cfg.key === slot);
+}
+function slotLabel(slot) {
+return slotConfig(slot).label;
+}
+function shuffle(list) {
+const copy = [...list];
+for (let i = copy.length - 1; i > 0; i -= 1) {
+const j = Math.floor(Math.random() * (i + 1));
+[copy[i], copy[j]] = [copy[j], copy[i]];
+}
+return copy;
+}
+els.startButton.addEventListener("click", startGame);
+els.restartButton.addEventListener("click", startGame);
+els.serveButton.addEventListener("click", serve);
+els.clearButton.addEventListener("click", clearTray);
+newOrder();
+</script>
+</body>
 </html>
