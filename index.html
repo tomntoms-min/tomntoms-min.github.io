@@ -16,6 +16,7 @@
 --green: #2f9e63;
 --blue: #3d8bcc;
 --bad: #d84f4f;
+--kitchen-bg: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%201200%20675%22%3E%3Cdefs%3E%3ClinearGradient%20id=%22wood%22%20x1=%220%22%20x2=%221%22%3E%3Cstop%20stop-color=%22#8b5a32%22/%3E%3Cstop%20offset=%22.5%22%20stop-color=%22#c99052%22/%3E%3Cstop%20offset=%221%22%20stop-color=%22#7b4a2b%22/%3E%3C/linearGradient%3E%3Cfilter%20id=%22s%22%3E%3CfeDropShadow%20dx=%220%22%20dy=%2210%22%20stdDeviation=%229%22%20flood-opacity=%22.24%22/%3E%3C/filter%3E%3C/defs%3E%3Crect%20width=%221200%22%20height=%22675%22%20fill=%22url(#wood)%22/%3E%3Cg%20opacity=%22.18%22%20stroke=%22#3e2414%22%20stroke-width=%222%22%3E%3Cpath%20d=%22M0%2092h1200M0%20188h1200M0%20294h1200M0%20411h1200M0%20526h1200%22/%3E%3Cpath%20d=%22M90%200v675M248%200v675M423%200v675M630%200v675M826%200v675M1018%200v675%22/%3E%3C/g%3E%3Cg%20filter=%22url(#s)%22%3E%3Ccircle%20cx=%2288%22%20cy=%22120%22%20r=%2292%22%20fill=%22#1f2428%22/%3E%3Ccircle%20cx=%2288%22%20cy=%22120%22%20r=%2258%22%20fill=%22#b8462c%22/%3E%3Ccircle%20cx=%221040%22%20cy=%22150%22%20r=%2262%22%20fill=%22#f7ead2%22/%3E%3Ccircle%20cx=%221040%22%20cy=%22150%22%20r=%2240%22%20fill=%22#d94738%22/%3E%3Ccircle%20cx=%221048%22%20cy=%22490%22%20r=%2286%22%20fill=%22#cda05e%22/%3E%3Ccircle%20cx=%221048%22%20cy=%22490%22%20r=%2258%22%20fill=%22#f9efdc%22/%3E%3Ccircle%20cx=%22220%22%20cy=%2278%22%20r=%2258%22%20fill=%22#f5ecdb%22/%3E%3Ccircle%20cx=%22220%22%20cy=%2278%22%20r=%2238%22%20fill=%22#fff%22/%3E%3Crect%20x=%22120%22%20y=%22520%22%20width=%22230%22%20height=%2286%22%20rx=%2216%22%20fill=%22#9a5c31%22/%3E%3Ccircle%20cx=%22170%22%20cy=%22563%22%20r=%2236%22%20fill=%22#e8f1d8%22/%3E%3Ccircle%20cx=%22252%22%20cy=%22563%22%20r=%2228%22%20fill=%22#c43d32%22/%3E%3Crect%20x=%22965%22%20y=%2230%22%20width=%22184%22%20height=%2272%22%20rx=%2214%22%20fill=%22#7e492a%22/%3E%3Ccircle%20cx=%22998%22%20cy=%2266%22%20r=%2222%22%20fill=%22#f2e4cc%22/%3E%3Ccircle%20cx=%221050%22%20cy=%2266%22%20r=%2222%22%20fill=%22#f2e4cc%22/%3E%3Cpath%20d=%22M1110%2044c34%208%2052%2015%2076%2038%22%20stroke=%22#1f8c4a%22%20stroke-width=%2218%22%20stroke-linecap=%22round%22/%3E%3Cpath%20d=%22M1118%2032c34%208%2052%2015%2076%2038%22%20stroke=%22#c33126%22%20stroke-width=%2214%22%20stroke-linecap=%22round%22/%3E%3C/g%3E%3Crect%20x=%22360%22%20y=%22135%22%20width=%22500%22%20height=%22330%22%20rx=%2226%22%20fill=%22#f5d89d%22%20opacity=%22.22%22/%3E%3C/svg%3E");
 }
 * {
 box-sizing: border-box;
@@ -29,12 +30,9 @@ overflow: hidden;
 body {
 color: var(--ink);
 background:
-linear-gradient(rgba(120, 86, 46, 0.06) 1px, transparent 1px),
-linear-gradient(90deg, rgba(120, 86, 46, 0.06) 1px, transparent 1px),
-radial-gradient(circle at 14% 12%, rgba(245, 178, 60, 0.3), transparent 28%),
-radial-gradient(circle at 84% 10%, rgba(228, 93, 69, 0.18), transparent 30%),
+linear-gradient(rgba(255, 246, 231, 0.72), rgba(255, 246, 231, 0.58)),
+var(--kitchen-bg) center / cover no-repeat fixed,
 #fff2dd;
-background-size: 34px 34px, 34px 34px, auto, auto, auto;
 font-family:
 Pretendard,
 "Noto Sans KR",
@@ -56,6 +54,7 @@ display: grid;
 grid-template-rows: auto minmax(0, 1fr);
 gap: 8px;
 overflow: hidden;
+backdrop-filter: saturate(1.08);
 }
 .top {
 display: grid;
@@ -92,10 +91,10 @@ min-width: min(560px, 100%);
 .station,
 .ingredient,
 .slot {
-border: 1px solid var(--line);
+border: 1px solid rgba(255, 255, 255, 0.72);
 border-radius: 8px;
-background: var(--panel);
-box-shadow: 0 12px 26px rgba(77, 47, 23, 0.1);
+background: rgba(255, 252, 245, 0.88);
+box-shadow: 0 12px 26px rgba(77, 47, 23, 0.14);
 }
 .metric {
 padding: 7px 9px;
@@ -132,7 +131,7 @@ gap: 8px;
 min-height: 0;
 }
 .order-strip {
-grid-template-columns: minmax(220px, 0.7fr) minmax(360px, 1.3fr);
+grid-template-columns: minmax(210px, 0.66fr) minmax(150px, 0.34fr) minmax(360px, 1.35fr);
 }
 .middle {
 grid-template-rows: minmax(0, 1fr) auto;
@@ -152,14 +151,52 @@ gap: 9px;
 align-items: center;
 }
 .face {
-width: 52px;
-height: 52px;
+width: 58px;
+height: 58px;
 display: grid;
 place-items: center;
 border-radius: 8px;
-background: #ffe0ba;
-font-size: 1.78rem;
-box-shadow: inset 0 0 0 2px rgba(43, 33, 24, 0.08);
+background:
+radial-gradient(circle at 50% 34%, #ffe0ba 0 38%, transparent 39%),
+radial-gradient(circle at 50% 84%, #f2a45b 0 46%, transparent 47%),
+#fff4df;
+font-size: 1.95rem;
+box-shadow: inset 0 0 0 2px rgba(43, 33, 24, 0.08), 0 8px 16px rgba(77, 47, 23, 0.12);
+}
+.timer-panel {
+display: grid;
+grid-template-columns: auto 1fr;
+gap: 10px;
+align-items: center;
+}
+.timer-ring {
+--patience: 360deg;
+width: 58px;
+height: 58px;
+border-radius: 999px;
+display: grid;
+place-items: center;
+background:
+radial-gradient(circle, #fff8e8 0 56%, transparent 58%),
+conic-gradient(var(--accent) var(--patience), rgba(43, 33, 24, 0.12) 0);
+box-shadow: inset 0 0 0 1px rgba(43, 33, 24, 0.08), 0 10px 18px rgba(77, 47, 23, 0.15);
+}
+.timer-ring strong {
+font-size: 1.15rem;
+line-height: 1;
+}
+.timer-ring small {
+margin-left: 1px;
+color: var(--muted);
+font-size: 0.58rem;
+font-weight: 900;
+}
+.timer-copy {
+margin: 0;
+color: var(--muted);
+font-size: 0.72rem;
+font-weight: 900;
+line-height: 1.2;
 }
 .order-title {
 margin: 0;
@@ -204,13 +241,13 @@ grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 .need {
 display: grid;
-grid-template-columns: 1fr auto;
+grid-template-columns: 34px 1fr auto;
 gap: 6px;
 align-items: center;
 min-height: 44px;
 border: 1px solid var(--line);
 border-radius: 8px;
-background: #fff;
+background: rgba(255, 255, 255, 0.9);
 padding: 7px 8px;
 }
 .need.done {
@@ -246,19 +283,65 @@ color: #fff;
 .ingredient {
 min-height: 48px;
 display: grid;
-grid-template-columns: auto 1fr;
+grid-template-columns: 42px 1fr;
 gap: 7px;
 align-items: center;
 padding: 7px 8px;
 cursor: grab;
 touch-action: none;
 user-select: none;
+background:
+linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(255, 247, 229, 0.86)),
+radial-gradient(circle at 18% 22%, rgba(255, 255, 255, 0.9), transparent 28%);
 }
 .ingredient.used {
 opacity: 0.42;
 }
 .emoji {
 font-size: 1.35rem;
+}
+.food-photo {
+position: relative;
+width: 34px;
+height: 34px;
+display: grid;
+place-items: center;
+overflow: hidden;
+border-radius: 999px;
+background:
+radial-gradient(circle at 50% 48%, rgba(255, 255, 255, 0.98) 0 43%, rgba(227, 211, 185, 0.95) 44% 52%, transparent 53%),
+linear-gradient(145deg, #f6dfc1, #fff8e8);
+box-shadow: inset 0 -3px 7px rgba(77, 47, 23, 0.12), 0 5px 12px rgba(77, 47, 23, 0.16);
+font-size: 1.25rem;
+}
+.food-photo::before {
+content: "";
+position: absolute;
+inset: 7px;
+border-radius: 999px;
+background: radial-gradient(circle at 38% 34%, rgba(255, 255, 255, 0.55), transparent 34%), var(--food-tone, #e45d45);
+filter: saturate(1.2);
+}
+.food-photo .emoji {
+position: relative;
+z-index: 1;
+text-shadow: 0 1px 2px rgba(43, 33, 24, 0.18);
+}
+.photo-main { --food-tone: #d9553f; }
+.photo-rice { --food-tone: #eadfc8; }
+.photo-soup { --food-tone: #bd7b42; }
+.photo-side { --food-tone: #49a363; }
+.photo-dessert { --food-tone: #e95c61; }
+.ingredient .food-photo {
+width: 42px;
+height: 42px;
+font-size: 1.45rem;
+}
+.station-photo {
+width: min(66px, 58%);
+height: auto;
+aspect-ratio: 1;
+font-size: clamp(1.3rem, 3vw, 2rem);
 }
 .small {
 display: block;
@@ -278,6 +361,21 @@ padding: 8px;
 display: grid;
 grid-template-rows: auto minmax(68px, 1fr) auto;
 gap: 6px;
+position: relative;
+overflow: hidden;
+background:
+linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 244, 225, 0.82)),
+linear-gradient(90deg, rgba(255, 255, 255, 0.32), transparent);
+}
+.station::before {
+content: "";
+position: absolute;
+inset: 0;
+pointer-events: none;
+background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.28), transparent);
+}
+.station > * {
+position: relative;
 }
 .station.loaded {
 border-color: rgba(61, 139, 204, 0.5);
@@ -299,13 +397,35 @@ font-size: 0.88rem;
 }
 .station-target {
 min-height: 72px;
-border: 2px dashed #dec8aa;
+border: 1px solid rgba(43, 33, 24, 0.08);
 border-radius: 8px;
 background: #fffaf0;
 display: grid;
 place-items: center;
 padding: 8px;
 text-align: center;
+box-shadow: inset 0 5px 12px rgba(77, 47, 23, 0.08);
+}
+.slot-main .station-target {
+background:
+repeating-linear-gradient(90deg, rgba(43, 33, 24, 0.16) 0 3px, transparent 3px 14px),
+radial-gradient(circle at center, #3e332d, #171310);
+color: #fff;
+}
+.slot-rice .station-target {
+background: radial-gradient(circle at center, #f8f2e6 0 42%, #d8c2a3 43% 52%, #7c6550 53% 100%);
+}
+.slot-soup .station-target {
+background: radial-gradient(circle at center, #bb6d37 0 38%, #f0d4a8 39% 49%, #5f6264 50% 100%);
+}
+.slot-side .station-target {
+background:
+linear-gradient(90deg, rgba(127, 88, 50, 0.14) 1px, transparent 1px),
+linear-gradient(#d79e62, #b5743f);
+background-size: 14px 100%, auto;
+}
+.slot-dessert .station-target {
+background: radial-gradient(circle at center, #fff5da 0 45%, #e2b86e 46% 55%, #f8df9c 56% 100%);
 }
 .station.loaded .station-target,
 .station.ready .station-target {
@@ -316,6 +436,7 @@ border-color: rgba(43, 33, 24, 0.08);
 display: grid;
 gap: 3px;
 place-items: center;
+color: var(--ink);
 }
 .station-food .emoji {
 font-size: 1.65rem;
@@ -323,8 +444,8 @@ font-size: 1.65rem;
 .action-pad {
 min-height: 62px;
 border-radius: 8px;
-background: #fff;
-border: 1px solid var(--line);
+background: rgba(255, 255, 255, 0.92);
+border: 1px solid rgba(255, 255, 255, 0.7);
 padding: 7px;
 text-align: center;
 touch-action: none;
@@ -365,10 +486,12 @@ background: var(--green);
 margin-top: 6px;
 min-height: 30px;
 border-radius: 8px;
-background: var(--green);
+background: linear-gradient(135deg, #2f9e63, #267f55);
 color: #fff;
-display: grid;
-place-items: center;
+display: flex;
+justify-content: center;
+align-items: center;
+gap: 5px;
 font-weight: 950;
 cursor: grab;
 touch-action: none;
@@ -377,11 +500,14 @@ user-select: none;
 .slot {
 min-height: 48px;
 display: grid;
-grid-template-columns: 1fr auto;
+grid-template-columns: 30px 1fr auto;
 gap: 6px;
 align-items: center;
 padding: 7px 8px;
-border-style: dashed;
+border-style: solid;
+background:
+radial-gradient(circle at 50% 48%, rgba(255, 255, 255, 0.92) 0 54%, rgba(226, 209, 181, 0.75) 55% 61%, transparent 62%),
+rgba(255, 250, 239, 0.76);
 }
 .slot.filled {
 border-style: solid;
@@ -390,9 +516,9 @@ background: #edf9e9;
 }
 .message {
 min-height: 42px;
-border: 1px solid var(--line);
+border: 1px solid rgba(255, 255, 255, 0.72);
 border-radius: 8px;
-background: #fff;
+background: rgba(255, 255, 255, 0.88);
 padding: 9px 10px;
 color: var(--muted);
 font-weight: 850;
@@ -485,7 +611,7 @@ grid-template-columns: 1fr;
 min-width: 0;
 }
 .order-strip {
-grid-template-columns: minmax(210px, 0.75fr) minmax(320px, 1.25fr);
+grid-template-columns: minmax(190px, 0.6fr) minmax(135px, 0.35fr) minmax(320px, 1.25fr);
 }
 .dock {
 grid-template-columns: minmax(280px, 1fr) minmax(260px, 0.9fr) 130px;
@@ -530,6 +656,20 @@ width: 42px;
 height: 42px;
 font-size: 1.4rem;
 }
+.timer-panel {
+grid-template-columns: auto 1fr;
+gap: 6px;
+}
+.timer-ring {
+width: 42px;
+height: 42px;
+}
+.timer-ring strong {
+font-size: 0.82rem;
+}
+.timer-copy {
+font-size: 0.58rem;
+}
 .order-title {
 font-size: 0.88rem;
 }
@@ -554,6 +694,9 @@ gap: 4px;
 .slot {
 min-height: 36px;
 padding: 5px 5px;
+}
+.need {
+grid-template-columns: 26px 1fr auto;
 }
 .label {
 font-size: 0.55rem;
@@ -587,6 +730,19 @@ padding: 4px;
 }
 .station-food .emoji {
 font-size: 1.15rem;
+}
+.food-photo {
+width: 26px;
+height: 26px;
+font-size: 0.96rem;
+}
+.ingredient .food-photo {
+width: 32px;
+height: 32px;
+font-size: 1.08rem;
+}
+.station-photo {
+width: min(44px, 70%);
 }
 .action-pad {
 min-height: 48px;
@@ -638,6 +794,12 @@ min-height: 36px;
 padding: 5px;
 gap: 4px;
 }
+.ingredient {
+grid-template-columns: 32px 1fr;
+}
+.slot {
+grid-template-columns: 26px 1fr auto;
+}
 .emoji {
 font-size: 1rem;
 }
@@ -682,7 +844,13 @@ font-size: 0.82rem;
 <p class="order-copy" id="orderCopy">주문 대기 중</p>
 </div>
 </div>
+</section>
+<section class="panel timer-panel" aria-label="손님 타이머">
+<div class="timer-ring" id="customerTimer"><strong id="patienceSeconds">42</strong><small>초</small></div>
+<div>
+<p class="timer-copy">손님 대기 시간</p>
 <div class="bar" aria-hidden="true"><div class="fill" id="patienceFill"></div></div>
+</div>
 </section>
 <section class="panel">
 <h2>주문서</h2>
@@ -782,6 +950,8 @@ mistakes: document.getElementById("mistakes"),
 customerFace: document.getElementById("customerFace"),
 orderTitle: document.getElementById("orderTitle"),
 orderCopy: document.getElementById("orderCopy"),
+customerTimer: document.getElementById("customerTimer"),
+patienceSeconds: document.getElementById("patienceSeconds"),
 patienceFill: document.getElementById("patienceFill"),
 orderList: document.getElementById("orderList"),
 pantry: document.getElementById("pantry"),
@@ -877,7 +1047,10 @@ els.combo.textContent = state.combo.toString();
 els.mistakes.textContent = `${state.mistakes}/5`;
 els.orderTitle.textContent = `${state.order.icon} ${state.order.season} 제철 한 끼`;
 els.orderCopy.textContent = state.order.nutrition;
-els.patienceFill.style.width = `${Math.max(0, (state.patienceMs / state.maxPatienceMs) * 100)}%`;
+const patienceRatio = Math.max(0, state.patienceMs / state.maxPatienceMs);
+els.patienceFill.style.width = `${patienceRatio * 100}%`;
+els.customerTimer.style.setProperty("--patience", `${patienceRatio * 360}deg`);
+els.patienceSeconds.textContent = Math.max(0, Math.ceil(state.patienceMs / 1000)).toString();
 els.serveButton.disabled = !state.running;
 els.clearButton.disabled = !state.running;
 }
@@ -888,8 +1061,8 @@ const done = Boolean(state.tray[item.slot]);
 const row = document.createElement("div");
 row.className = `need ${done ? "done" : ""}`;
 row.innerHTML = `
-<span class="label">${slotLabel(item.slot)}</span>
-<span class="name">${item.icon} ${item.name}</span>
+${foodPhoto(item)}
+<span><span class="label">${slotLabel(item.slot)}</span><span class="name">${item.icon} ${item.name}</span></span>
 <span class="check">${done ? "✓" : ""}</span>
 `;
 els.orderList.appendChild(row);
@@ -903,7 +1076,7 @@ card.className = `ingredient ${item.used ? "used" : ""}`;
 card.dataset.dragType = "ingredient";
 card.dataset.dragId = item.dragId;
 card.innerHTML = `
-<span class="emoji">${item.icon}</span>
+${foodPhoto(item)}
 <span><span class="name">${item.name}</span><span class="small">${slotLabel(item.slot)} 재료</span></span>
 `;
 if (!item.used) card.addEventListener("pointerdown", startDrag);
@@ -915,7 +1088,7 @@ els.stations.innerHTML = "";
 for (const cfg of SLOT_CONFIG) {
 const station = state.stations[cfg.key];
 const node = document.createElement("section");
-node.className = `station ${station.status}`;
+node.className = `station slot-${cfg.key} ${station.status}`;
 node.dataset.drop = "station";
 node.dataset.slot = cfg.key;
 const ready = station.status === "ready";
@@ -925,11 +1098,11 @@ node.innerHTML = `
 <span class="emoji">${cfg.icon}</span>
 </div>
 <div class="station-target">
-${station.food ? `<div class="station-food"><span class="emoji">${station.food.icon}</span><span class="name">${station.food.name}</span><span class="small">${ready ? "완성 접시를 식판으로 끌기" : "조리 동작 수행"}</span></div>` : `<div><span class="small">여기에</span><br><strong>${slotLabel(cfg.key)} 재료 드롭</strong></div>`}
+${station.food ? `<div class="station-food">${foodPhoto(station.food, "station-photo")}<span class="name">${station.food.name}</span><span class="small">${ready ? "완성 접시를 식판으로 끌기" : "조리 동작 수행"}</span></div>` : `<div><span class="small">여기에</span><br><strong>${slotLabel(cfg.key)} 재료 드롭</strong></div>`}
 </div>
 <div>
 ${station.food && !ready ? actionMarkup(cfg, station) : ""}
-${ready ? `<div class="dish" data-drag-type="dish" data-slot="${cfg.key}">${station.food.icon} ${station.food.name}</div>` : ""}
+${ready ? `<div class="dish" data-drag-type="dish" data-slot="${cfg.key}">${foodPhoto(station.food)} ${station.food.name}</div>` : ""}
 </div>
 `;
 els.stations.appendChild(node);
@@ -960,8 +1133,8 @@ slot.className = `slot ${item ? "filled" : ""}`;
 slot.dataset.drop = "tray";
 slot.dataset.slot = cfg.key;
 slot.innerHTML = `
-<span class="label">${cfg.label}</span>
-<span class="name">${item ? `${item.icon} ${item.name}` : "비어 있음"}</span>
+${item ? foodPhoto(item) : `<span class="food-photo photo-${cfg.key}"><span class="emoji">${cfg.icon}</span></span>`}
+<span><span class="label">${cfg.label}</span><span class="name">${item ? `${item.icon} ${item.name}` : "비어 있음"}</span></span>
 <span class="check">${item ? "✓" : ""}</span>
 `;
 els.tray.appendChild(slot);
@@ -1178,6 +1351,9 @@ return SLOT_CONFIG.find((cfg) => cfg.key === slot);
 }
 function slotLabel(slot) {
 return slotConfig(slot).label;
+}
+function foodPhoto(item, extra = "") {
+return `<span class="food-photo photo-${item.slot} ${extra}"><span class="emoji">${item.icon}</span></span>`;
 }
 function shuffle(list) {
 const copy = [...list];
