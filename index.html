@@ -3,18 +3,21 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>제철 식판 러시</title>
+    <title>슈식 제철한끼 가게</title>
     <style>
       :root {
-        --ink: #2c241b;
-        --muted: #74695d;
-        --paper: #fffaf0;
-        --panel: rgba(255, 252, 245, 0.94);
-        --line: #e7d9c4;
-        --accent: #6fa948;
-        --soft: #e8f4d8;
-        --danger: #d95b55;
-        --gold: #d8942f;
+        --ink: #2b2118;
+        --muted: #7b6d5e;
+        --paper: #fff7e9;
+        --panel: #fffdf7;
+        --line: #ead8be;
+        --accent: #e35d45;
+        --accent2: #f6b23b;
+        --good: #2f9e63;
+        --bad: #d64e4e;
+        --cook: #3d8bcc;
+        --ready: #2f9e63;
+        --burn: #4a3024;
       }
 
       * {
@@ -25,18 +28,17 @@
       body {
         margin: 0;
         min-height: 100%;
-        overflow-x: hidden;
       }
 
       body {
         color: var(--ink);
         background:
-          linear-gradient(rgba(84, 63, 39, 0.055) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(84, 63, 39, 0.055) 1px, transparent 1px),
-          radial-gradient(circle at 12% 10%, rgba(111, 169, 72, 0.25), transparent 28%),
-          radial-gradient(circle at 84% 12%, rgba(62, 155, 210, 0.2), transparent 28%),
-          linear-gradient(135deg, #fff8ea 0%, #f8f0df 52%, #fff4ee 100%);
-        background-size: 32px 32px, 32px 32px, auto, auto, auto;
+          linear-gradient(rgba(120, 86, 46, 0.06) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(120, 86, 46, 0.06) 1px, transparent 1px),
+          radial-gradient(circle at 16% 10%, rgba(246, 178, 59, 0.28), transparent 28%),
+          radial-gradient(circle at 84% 12%, rgba(227, 93, 69, 0.18), transparent 30%),
+          #fff3df;
+        background-size: 34px 34px, 34px 34px, auto, auto, auto;
         font-family:
           Pretendard,
           "Noto Sans KR",
@@ -52,10 +54,10 @@
       }
 
       .app {
-        width: min(1180px, 100%);
+        width: min(1200px, 100%);
         min-height: 100vh;
         margin: 0 auto;
-        padding: 16px;
+        padding: 14px;
         display: grid;
         grid-template-rows: auto 1fr;
         gap: 12px;
@@ -64,20 +66,20 @@
       .top {
         display: grid;
         grid-template-columns: 1fr auto;
-        gap: 14px;
+        gap: 12px;
         align-items: end;
       }
 
       .kicker {
         margin: 0 0 5px;
         color: var(--accent);
-        font-weight: 950;
         font-size: 0.88rem;
+        font-weight: 950;
       }
 
       h1 {
         margin: 0;
-        font-size: clamp(1.8rem, 4vw, 3.35rem);
+        font-size: clamp(1.85rem, 4vw, 3.4rem);
         line-height: 1;
         letter-spacing: 0;
       }
@@ -89,12 +91,18 @@
         min-width: min(620px, 100%);
       }
 
-      .metric {
+      .metric,
+      .card,
+      .station,
+      .tray {
         border: 1px solid var(--line);
         border-radius: 8px;
-        background: var(--panel);
+        background: rgba(255, 253, 247, 0.95);
+        box-shadow: 0 12px 26px rgba(77, 47, 23, 0.1);
+      }
+
+      .metric {
         padding: 9px 11px;
-        box-shadow: 0 10px 24px rgba(68, 45, 26, 0.1);
       }
 
       .metric span {
@@ -107,174 +115,266 @@
       .metric strong {
         display: block;
         margin-top: 3px;
-        font-size: 1.28rem;
+        font-size: 1.25rem;
         line-height: 1;
       }
 
-      .layout {
+      .game {
         display: grid;
-        grid-template-columns: minmax(310px, 760px) minmax(280px, 360px);
-        gap: 14px;
-        align-items: stretch;
-        min-height: 0;
-      }
-
-      .stage,
-      .side {
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        background: var(--panel);
-        box-shadow: 0 20px 50px rgba(68, 45, 26, 0.16);
-      }
-
-      .stage {
-        position: relative;
-        overflow: hidden;
-        min-height: 640px;
-      }
-
-      canvas {
-        display: block;
-        width: 100%;
-        height: 100%;
-        min-height: 640px;
-        touch-action: none;
-      }
-
-      .side {
-        padding: 15px;
-        display: grid;
-        grid-template-rows: auto auto 1fr auto;
+        grid-template-columns: minmax(320px, 420px) 1fr;
         gap: 12px;
       }
 
-      .order {
-        border: 1px dashed color-mix(in srgb, var(--accent) 54%, var(--line));
-        border-radius: 8px;
-        background: linear-gradient(135deg, var(--soft), #fffdf8);
+      .left,
+      .right {
+        display: grid;
+        gap: 12px;
+        align-content: start;
+      }
+
+      .card {
         padding: 14px;
       }
 
-      .season {
-        display: flex;
+      .customer {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 12px;
         align-items: center;
-        gap: 10px;
       }
 
-      .season-icon {
-        width: 50px;
-        height: 50px;
+      .face {
+        width: 72px;
+        height: 72px;
         display: grid;
         place-items: center;
         border-radius: 8px;
-        background: #fff;
-        font-size: 1.8rem;
-        box-shadow: inset 0 0 0 1px rgba(44, 36, 27, 0.08);
+        background: #ffe0ba;
+        font-size: 2.35rem;
+        box-shadow: inset 0 0 0 2px rgba(43, 33, 24, 0.08);
       }
 
-      .season h2 {
+      .order-title {
         margin: 0;
-        font-size: 1.55rem;
-        line-height: 1.05;
+        font-size: 1.42rem;
+        line-height: 1.1;
       }
 
-      .season p,
-      .note {
+      .order-copy {
         margin: 6px 0 0;
         color: var(--muted);
-        font-weight: 760;
-        line-height: 1.4;
+        font-weight: 780;
+        line-height: 1.35;
       }
 
-      .need-list {
+      .patience {
+        margin-top: 12px;
+      }
+
+      .bar {
+        height: 12px;
+        border-radius: 999px;
+        background: #f0dfc4;
+        overflow: hidden;
+      }
+
+      .fill {
+        width: 100%;
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, var(--good), var(--accent2));
+        transition: width 120ms linear;
+      }
+
+      .order-list,
+      .tray-slots {
         display: grid;
-        gap: 7px;
+        gap: 8px;
       }
 
-      .need {
+      .need,
+      .slot {
         display: grid;
         grid-template-columns: auto 1fr auto;
         gap: 8px;
         align-items: center;
-        min-height: 42px;
+        min-height: 43px;
         border: 1px solid var(--line);
         border-radius: 8px;
         background: #fff;
         padding: 8px 10px;
       }
 
-      .need.done {
-        border-color: color-mix(in srgb, var(--accent) 54%, white);
-        background: color-mix(in srgb, var(--soft) 55%, white);
+      .need.done,
+      .slot.filled {
+        background: #edf9e9;
+        border-color: rgba(47, 158, 99, 0.35);
       }
 
-      .need-label {
-        color: var(--muted);
-        font-size: 0.8rem;
-        font-weight: 900;
-      }
-
-      .need-name {
-        font-weight: 950;
-        word-break: keep-all;
-      }
-
-      .need-check {
-        width: 24px;
-        height: 24px;
-        display: grid;
-        place-items: center;
-        border-radius: 999px;
-        background: #f0e5d2;
-        color: var(--muted);
-        font-weight: 950;
-      }
-
-      .need.done .need-check {
-        background: var(--accent);
-        color: #fff;
-      }
-
-      .nutrition {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-      }
-
-      .nutrition div {
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        background: #fff;
-        padding: 10px;
-      }
-
-      .nutrition span {
-        display: block;
+      .label {
         color: var(--muted);
         font-size: 0.78rem;
         font-weight: 900;
       }
 
-      .nutrition strong {
-        display: block;
-        margin-top: 4px;
-        font-size: 1.25rem;
+      .name {
+        font-weight: 950;
+        word-break: keep-all;
+      }
+
+      .check {
+        width: 24px;
+        height: 24px;
+        display: grid;
+        place-items: center;
+        border-radius: 999px;
+        background: #f1e2c9;
+        color: var(--muted);
+        font-weight: 950;
+      }
+
+      .done .check,
+      .filled .check {
+        background: var(--good);
+        color: #fff;
+      }
+
+      .stations {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(120px, 1fr));
+        gap: 10px;
+      }
+
+      .station {
+        min-height: 210px;
+        padding: 12px;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        gap: 10px;
+        cursor: pointer;
+        transition:
+          transform 120ms ease,
+          border-color 120ms ease,
+          background 120ms ease;
+      }
+
+      .station:hover {
+        transform: translateY(-1px);
+      }
+
+      .station.cooking {
+        border-color: rgba(61, 139, 204, 0.55);
+        background: #f1f8ff;
+      }
+
+      .station.ready {
+        border-color: rgba(47, 158, 99, 0.65);
+        background: #effbec;
+        animation: pulse 620ms ease-in-out infinite alternate;
+      }
+
+      .station.burned {
+        border-color: rgba(74, 48, 36, 0.7);
+        background: #f2e7df;
+      }
+
+      .station-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      .station-title {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 950;
+      }
+
+      .station-icon {
+        font-size: 1.45rem;
+      }
+
+      .pot {
+        display: grid;
+        place-items: center;
+        min-height: 92px;
+        border-radius: 8px;
+        background: #f7ead4;
+        border: 1px solid rgba(43, 33, 24, 0.08);
+      }
+
+      .food-emoji {
+        font-size: 2.6rem;
+        filter: drop-shadow(0 8px 12px rgba(88, 57, 28, 0.16));
+      }
+
+      .station-status {
+        min-height: 38px;
+        color: var(--muted);
+        font-weight: 850;
+        line-height: 1.25;
+        text-align: center;
+      }
+
+      .cookbar {
+        height: 10px;
+        border-radius: 999px;
+        background: #ecdcc4;
+        overflow: hidden;
+      }
+
+      .cookfill {
+        height: 100%;
+        width: 0%;
+        border-radius: inherit;
+        background: var(--cook);
+      }
+
+      .station.ready .cookfill {
+        background: var(--ready);
+      }
+
+      .station.burned .cookfill {
+        background: var(--burn);
+      }
+
+      .tray {
+        padding: 14px;
+      }
+
+      .tray-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+
+      .tray-top h2 {
+        margin: 0;
+        font-size: 1.18rem;
+      }
+
+      .tray-score {
+        color: var(--muted);
+        font-weight: 900;
       }
 
       .message {
-        min-height: 56px;
+        min-height: 54px;
+        border: 1px solid var(--line);
         border-radius: 8px;
         background: #fff;
-        border: 1px solid var(--line);
         padding: 12px;
         color: var(--muted);
         font-weight: 850;
-        line-height: 1.4;
+        line-height: 1.35;
       }
 
       .controls {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr;
         gap: 8px;
       }
 
@@ -298,15 +398,21 @@
         color: var(--ink);
       }
 
+      .primary:disabled,
+      .ghost:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+
       .overlay {
-        position: absolute;
+        position: fixed;
         inset: 0;
         display: none;
         place-items: center;
         padding: 20px;
-        background: rgba(255, 248, 234, 0.78);
+        background: rgba(43, 33, 24, 0.42);
         backdrop-filter: blur(8px);
-        z-index: 5;
+        z-index: 20;
       }
 
       .overlay.show {
@@ -314,24 +420,24 @@
       }
 
       .modal {
-        width: min(430px, 100%);
+        width: min(480px, 100%);
         border: 1px solid var(--line);
         border-radius: 8px;
-        background: #fffdf7;
-        padding: 22px;
+        background: var(--panel);
+        padding: 24px;
         text-align: center;
-        box-shadow: 0 20px 50px rgba(68, 45, 26, 0.18);
+        box-shadow: 0 22px 54px rgba(43, 33, 24, 0.24);
       }
 
       .modal h2 {
         margin: 0 0 10px;
-        font-size: 1.72rem;
+        font-size: 1.75rem;
       }
 
       .modal p {
         margin: 0 0 18px;
         color: var(--muted);
-        font-weight: 780;
+        font-weight: 800;
         line-height: 1.48;
       }
 
@@ -339,20 +445,27 @@
         width: 100%;
       }
 
-      @media (max-width: 900px) {
+      @keyframes pulse {
+        from {
+          box-shadow: 0 12px 26px rgba(77, 47, 23, 0.1);
+        }
+        to {
+          box-shadow: 0 0 0 4px rgba(47, 158, 99, 0.18), 0 12px 26px rgba(77, 47, 23, 0.1);
+        }
+      }
+
+      @media (max-width: 980px) {
         .top,
-        .layout {
+        .game {
           grid-template-columns: 1fr;
         }
 
         .hud {
-          grid-template-columns: repeat(5, minmax(0, 1fr));
           min-width: 0;
         }
 
-        .stage,
-        canvas {
-          min-height: 560px;
+        .stations {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
         }
       }
 
@@ -365,11 +478,7 @@
           grid-template-columns: repeat(3, minmax(0, 1fr));
         }
 
-        .metric strong {
-          font-size: 1.08rem;
-        }
-
-        .nutrition,
+        .stations,
         .controls {
           grid-template-columns: 1fr;
         }
@@ -380,581 +489,446 @@
     <main class="app">
       <header class="top">
         <div>
-          <p class="kicker">PPT 사계절 제철 식단 기반</p>
-          <h1>제철 식판 러시</h1>
+          <p class="kicker">슈의 라면가게 감성 패러디 · PPT 사계절 식단 반영</p>
+          <h1>슈식 제철한끼 가게</h1>
         </div>
         <section class="hud" aria-label="게임 상태">
-          <div class="metric"><span>점수</span><strong id="score">0</strong></div>
-          <div class="metric"><span>시간</span><strong id="time">75</strong></div>
+          <div class="metric"><span>매출</span><strong id="score">0</strong></div>
+          <div class="metric"><span>남은 시간</span><strong id="time">120</strong></div>
+          <div class="metric"><span>손님</span><strong id="served">0</strong></div>
           <div class="metric"><span>콤보</span><strong id="combo">0</strong></div>
-          <div class="metric"><span>라운드</span><strong id="round">1</strong></div>
-          <div class="metric"><span>라이프</span><strong id="lives">3</strong></div>
+          <div class="metric"><span>실수</span><strong id="mistakes">0/5</strong></div>
         </section>
       </header>
 
-      <section class="layout">
-        <section class="stage" aria-label="떨어지는 음식 카드 게임">
-          <canvas id="gameCanvas" width="760" height="640"></canvas>
-          <div class="overlay show" id="startOverlay">
-            <div class="modal">
-              <h2>떨어지는 음식만 골라 담기</h2>
-              <p>현재 계절 식단에 맞는 음식 카드를 터치하세요. 틀리면 라이프가 줄고, 정답을 연속으로 맞히면 점수가 크게 오릅니다.</p>
-              <button class="primary" id="startButton" type="button">시작</button>
-            </div>
-          </div>
-          <div class="overlay" id="endOverlay">
-            <div class="modal">
-              <h2 id="endTitle">도전 종료</h2>
-              <p id="endText">0점</p>
-              <button class="primary" id="restartButton" type="button">다시 도전</button>
-            </div>
-          </div>
-        </section>
-
-        <aside class="side">
-          <div class="order">
-            <div class="season">
-              <span class="season-icon" id="seasonIcon">🌱</span>
+      <section class="game">
+        <aside class="left">
+          <section class="card">
+            <div class="customer">
+              <div class="face" id="customerFace">🙂</div>
               <div>
-                <h2 id="seasonTitle">봄 제철 식판</h2>
-                <p id="seasonHint">단백질 + 국 + 과일 구성</p>
+                <h2 class="order-title" id="orderTitle">봄 제철 한 끼</h2>
+                <p class="order-copy" id="orderCopy">손님이 주문을 기다립니다.</p>
               </div>
             </div>
-          </div>
+            <div class="patience">
+              <div class="bar"><div class="fill" id="patienceFill"></div></div>
+            </div>
+          </section>
 
-          <div class="nutrition">
-            <div><span>기준</span><strong id="persona">남학생</strong></div>
-            <div><span>목표</span><strong id="targetNutri">710 kcal</strong></div>
-          </div>
+          <section class="card">
+            <div class="order-list" id="orderList"></div>
+          </section>
 
-          <div class="need-list" id="needList"></div>
+          <section class="card">
+            <div class="message" id="message">시작하면 첫 손님이 들어옵니다.</div>
+          </section>
 
-          <div class="message" id="message">시작하면 카드가 떨어집니다.</div>
-
-          <div class="controls">
-            <button class="ghost" id="pauseButton" type="button">일시정지</button>
-            <button class="ghost" id="skipButton" type="button">라운드 넘기기</button>
-          </div>
+          <section class="controls">
+            <button class="primary" id="startButton" type="button">시작</button>
+            <button class="ghost" id="serveButton" type="button">서빙</button>
+            <button class="ghost" id="trashButton" type="button">식판 비우기</button>
+          </section>
         </aside>
+
+        <section class="right">
+          <section class="stations" id="stations"></section>
+
+          <section class="tray">
+            <div class="tray-top">
+              <h2>현재 식판</h2>
+              <span class="tray-score" id="trayScore">0 / 5</span>
+            </div>
+            <div class="tray-slots" id="traySlots"></div>
+          </section>
+        </section>
       </section>
     </main>
+
+    <div class="overlay show" id="startOverlay">
+      <div class="modal">
+        <h2>제철 한끼 가게 오픈</h2>
+        <p>조리대를 눌러 요리를 시작하고, 초록색 완성 타이밍에 다시 눌러 식판에 담으세요. 너무 늦으면 탑니다.</p>
+        <button class="primary" id="overlayStart" type="button">가게 열기</button>
+      </div>
+    </div>
+
+    <div class="overlay" id="endOverlay">
+      <div class="modal">
+        <h2 id="endTitle">영업 종료</h2>
+        <p id="endText">오늘 매출 0원</p>
+        <button class="primary" id="restartButton" type="button">다시 영업</button>
+      </div>
+    </div>
 
     <script>
       "use strict";
 
-      const SLOT_LABELS = {
-        main: "메인",
-        rice: "밥",
-        soup: "국",
-        side: "반찬",
-        dessert: "후식",
-      };
+      const SLOTS = [
+        { key: "main", label: "메인", station: "불판", icon: "🔥", cook: 3600, ready: 3300 },
+        { key: "rice", label: "밥", station: "밥솥", icon: "🍚", cook: 2600, ready: 3700 },
+        { key: "soup", label: "국", station: "냄비", icon: "🥣", cook: 3300, ready: 3400 },
+        { key: "side", label: "반찬", station: "무침대", icon: "🥬", cook: 2100, ready: 4300 },
+        { key: "dessert", label: "후식", station: "과일대", icon: "🍓", cook: 1500, ready: 4800 },
+      ];
 
       const MEALS = [
-        {
-          season: "봄",
-          title: "봄 제철 식판",
-          icon: "🌱",
-          accent: "#6fa948",
-          soft: "#e8f4d8",
-          hint: "봄 제철 재료를 한 끼에 담기",
-          kcal: { male: 710, female: 560 },
-          protein: { male: 49, female: 38 },
-          foods: [
-            food("쭈꾸미볶음", "main", "🐙"),
-            food("잡곡밥", "rice", "🍚"),
-            food("바지락냉이국", "soup", "🥣"),
-            food("달래무침", "side", "🥬"),
-            food("딸기", "dessert", "🍓"),
-          ],
-        },
-        {
-          season: "여름",
-          title: "여름 제철 식판",
-          icon: "☀️",
-          accent: "#3e9bd2",
-          soft: "#dff2ff",
-          hint: "더운 날씨에 가볍고 시원하게",
-          kcal: { male: 765, female: 623 },
-          protein: { male: 43, female: 36 },
-          foods: [
-            food("오징어·가지볶음", "main", "🦑"),
-            food("잡곡밥", "rice", "🍚"),
-            food("오이냉국", "soup", "🥒"),
-            food("토마토", "side", "🍅"),
-            food("수박", "dessert", "🍉"),
-          ],
-        },
-        {
-          season: "가을",
-          title: "가을 제철 식판",
-          icon: "🍁",
-          accent: "#c7832f",
-          soft: "#fff0d5",
-          hint: "생선과 채소로 포만감 있게",
-          kcal: { male: 820, female: 720 },
-          protein: { male: 42, female: 37 },
-          foods: [
-            food("고등어구이", "main", "🐟"),
-            food("백미밥", "rice", "🍚"),
-            food("배추된장국", "soup", "🥣"),
-            food("버섯볶음", "side", "🍄"),
-            food("단호박·사과", "dessert", "🍎"),
-          ],
-        },
-        {
-          season: "겨울",
-          title: "겨울 제철 식판",
-          icon: "❄️",
-          accent: "#d6655e",
-          soft: "#fde5e1",
-          hint: "따뜻한 국과 생선 중심",
-          kcal: { male: 835, female: 650 },
-          protein: { male: 42, female: 34 },
-          foods: [
-            food("고등어구이", "main", "🐟"),
-            food("현미밥", "rice", "🍚"),
-            food("굴미역국", "soup", "🦪"),
-            food("시금치나물·김치", "side", "🥬"),
-            food("감귤", "dessert", "🍊"),
-          ],
-        },
+        meal("봄", "🌱", "#76a943", "남 710 kcal · 단백질 49g / 여 560 kcal · 단백질 38g", [
+          food("main", "쭈꾸미볶음", "🐙"),
+          food("rice", "잡곡밥", "🍚"),
+          food("soup", "바지락냉이국", "🥣"),
+          food("side", "달래무침", "🥬"),
+          food("dessert", "딸기", "🍓"),
+        ]),
+        meal("여름", "☀️", "#3e9bd2", "남 765 kcal · 단백질 43g / 여 623 kcal · 단백질 36g", [
+          food("main", "오징어·가지볶음", "🦑"),
+          food("rice", "잡곡밥", "🍚"),
+          food("soup", "오이냉국", "🥒"),
+          food("side", "토마토", "🍅"),
+          food("dessert", "수박", "🍉"),
+        ]),
+        meal("가을", "🍁", "#c7832f", "남 820 kcal · 단백질 42g / 여 720 kcal · 단백질 37g", [
+          food("main", "고등어구이", "🐟"),
+          food("rice", "백미밥", "🍚"),
+          food("soup", "배추된장국", "🥣"),
+          food("side", "버섯볶음", "🍄"),
+          food("dessert", "단호박·사과", "🍎"),
+        ]),
+        meal("겨울", "❄️", "#d6655e", "남 약 835 kcal · 단백질 42g / 여 약 650 kcal · 단백질 34g", [
+          food("main", "고등어구이", "🐟"),
+          food("rice", "현미밥", "🍚"),
+          food("soup", "굴미역국", "🦪"),
+          food("side", "시금치나물·김치", "🥬"),
+          food("dessert", "감귤", "🍊"),
+        ]),
       ];
 
-      const DECOYS = [
-        food("하남쭈꾸미", "main", "🐙"),
-        food("부추무침", "side", "🥗"),
-        food("방울토마토", "dessert", "🍅"),
-        food("현미귀리밥", "rice", "🍚"),
-        food("커피와 토마토", "dessert", "☕"),
-        food("애호박볶음", "side", "🥒"),
-        food("꽁치·삼치구이", "main", "🐟"),
-        food("느타리버섯", "side", "🍄"),
-        food("배·감", "dessert", "🍐"),
-        food("조개국·미역국", "soup", "🥣"),
-        food("봉동 시금치", "side", "🥬"),
-        food("오렌지 소포장 과일", "dessert", "🍊"),
-        food("컷수박", "dessert", "🍉"),
-        food("간편 고등어구이", "main", "🐟"),
-      ];
+      const CUSTOMERS = ["🙂", "😋", "🤤", "😮", "🥹", "😎", "😆"];
+      const BURN_LIMIT = 5600;
 
-      const canvas = document.getElementById("gameCanvas");
-      const ctx = canvas.getContext("2d");
       const els = {
         score: document.getElementById("score"),
         time: document.getElementById("time"),
+        served: document.getElementById("served"),
         combo: document.getElementById("combo"),
-        round: document.getElementById("round"),
-        lives: document.getElementById("lives"),
-        seasonIcon: document.getElementById("seasonIcon"),
-        seasonTitle: document.getElementById("seasonTitle"),
-        seasonHint: document.getElementById("seasonHint"),
-        persona: document.getElementById("persona"),
-        targetNutri: document.getElementById("targetNutri"),
-        needList: document.getElementById("needList"),
+        mistakes: document.getElementById("mistakes"),
+        customerFace: document.getElementById("customerFace"),
+        orderTitle: document.getElementById("orderTitle"),
+        orderCopy: document.getElementById("orderCopy"),
+        patienceFill: document.getElementById("patienceFill"),
+        orderList: document.getElementById("orderList"),
+        stations: document.getElementById("stations"),
+        traySlots: document.getElementById("traySlots"),
+        trayScore: document.getElementById("trayScore"),
         message: document.getElementById("message"),
+        startButton: document.getElementById("startButton"),
+        overlayStart: document.getElementById("overlayStart"),
+        restartButton: document.getElementById("restartButton"),
+        serveButton: document.getElementById("serveButton"),
+        trashButton: document.getElementById("trashButton"),
         startOverlay: document.getElementById("startOverlay"),
         endOverlay: document.getElementById("endOverlay"),
         endTitle: document.getElementById("endTitle"),
         endText: document.getElementById("endText"),
-        startButton: document.getElementById("startButton"),
-        restartButton: document.getElementById("restartButton"),
-        pauseButton: document.getElementById("pauseButton"),
-        skipButton: document.getElementById("skipButton"),
       };
 
       const state = {
-        mode: "ready",
+        running: false,
         score: 0,
+        served: 0,
         combo: 0,
-        round: 1,
-        lives: 3,
-        timeMs: 75000,
-        spawnMs: 0,
-        cards: [],
-        particles: [],
-        meal: MEALS[0],
-        persona: "male",
-        filled: new Set(),
+        mistakes: 0,
+        timeMs: 120000,
+        order: MEALS[0],
+        patienceMs: 26000,
+        maxPatienceMs: 26000,
+        tray: {},
+        stations: {},
+        timer: null,
         last: 0,
       };
 
-      function food(name, slot, icon) {
-        return { name, slot, icon };
+      function meal(season, icon, color, nutrition, foods) {
+        return { season, icon, color, nutrition, foods };
       }
 
-      function resizeCanvas() {
-        const rect = canvas.getBoundingClientRect();
-        const ratio = Math.max(1, window.devicePixelRatio || 1);
-        canvas.width = Math.floor(rect.width * ratio);
-        canvas.height = Math.floor(rect.height * ratio);
-        ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      function food(slot, name, icon) {
+        return { slot, name, icon };
       }
 
       function startGame() {
-        state.mode = "playing";
+        state.running = true;
         state.score = 0;
+        state.served = 0;
         state.combo = 0;
-        state.round = 1;
-        state.lives = 3;
-        state.timeMs = 75000;
-        state.cards = [];
-        state.particles = [];
+        state.mistakes = 0;
+        state.timeMs = 120000;
+        state.tray = {};
+        resetStations();
+        newOrder();
         els.startOverlay.classList.remove("show");
         els.endOverlay.classList.remove("show");
-        setupRound();
+        els.message.textContent = "주문 확인! 조리대를 눌러 동시에 요리를 돌리세요.";
         state.last = performance.now();
-        requestAnimationFrame(loop);
+        clearInterval(state.timer);
+        state.timer = window.setInterval(tick, 100);
+        render();
       }
 
-      function setupRound() {
-        state.meal = MEALS[(state.round - 1) % MEALS.length];
-        state.persona = state.round % 2 === 0 ? "female" : "male";
-        state.filled = new Set();
-        state.cards = [];
-        state.spawnMs = 320;
-        document.documentElement.style.setProperty("--accent", state.meal.accent);
-        document.documentElement.style.setProperty("--soft", state.meal.soft);
-        els.message.textContent = `${state.meal.season} 식판을 완성하세요. 정답 5개를 모두 터치하면 다음 라운드입니다.`;
-        updateHud();
+      function resetStations() {
+        state.stations = {};
+        for (const slot of SLOTS) {
+          state.stations[slot.key] = {
+            slot: slot.key,
+            status: "idle",
+            elapsed: 0,
+          };
+        }
       }
 
-      function loop(now) {
-        if (state.mode !== "playing") return;
-        const dt = Math.min(48, now - state.last);
+      function newOrder() {
+        state.order = MEALS[state.served % MEALS.length];
+        state.maxPatienceMs = Math.max(13500, 27000 - state.served * 750);
+        state.patienceMs = state.maxPatienceMs;
+        state.tray = {};
+        resetStations();
+        document.documentElement.style.setProperty("--accent", state.order.color);
+        els.customerFace.textContent = CUSTOMERS[state.served % CUSTOMERS.length];
+      }
+
+      function tick() {
+        if (!state.running) return;
+        const now = performance.now();
+        const dt = Math.min(300, now - state.last);
         state.last = now;
-        update(dt);
-        draw();
-        requestAnimationFrame(loop);
-      }
-
-      function update(dt) {
         state.timeMs -= dt;
-        if (state.timeMs <= 0) {
-          finishGame();
-          return;
-        }
+        state.patienceMs -= dt;
 
-        state.spawnMs -= dt;
-        if (state.spawnMs <= 0) {
-          spawnCard();
-          state.spawnMs = Math.max(420, 960 - state.round * 55 - state.combo * 8);
-        }
-
-        const h = canvas.clientHeight;
-        for (const card of state.cards) {
-          card.y += card.speed * (dt / 16.67);
-          card.spin += card.spinSpeed * (dt / 16.67);
-        }
-        for (const card of state.cards) {
-          if (!card.missed && card.y > h + 74) {
-            card.missed = true;
-            if (card.correct && !state.filled.has(card.slot)) {
+        for (const station of Object.values(state.stations)) {
+          if (station.status === "cooking" || station.status === "ready") {
+            station.elapsed += dt;
+            const cfg = slotConfig(station.slot);
+            if (station.status === "cooking" && station.elapsed >= cfg.cook) {
+              station.status = "ready";
+              els.message.textContent = `${cfg.station} 완성! 타기 전에 담으세요.`;
+            }
+            if (station.elapsed >= cfg.cook + cfg.ready) {
+              station.status = "burned";
               state.combo = 0;
-              els.message.textContent = `${card.name}을 놓쳤습니다. 콤보가 끊겼습니다.`;
+              els.message.textContent = `${cfg.station} 음식이 탔습니다. 버리고 다시 조리하세요.`;
             }
           }
         }
-        state.cards = state.cards.filter((card) => card.y < h + 130 && !card.hit);
 
-        for (const p of state.particles) {
-          p.life -= dt;
-          p.x += p.vx * (dt / 16.67);
-          p.y += p.vy * (dt / 16.67);
-          p.vy += 0.16 * (dt / 16.67);
-        }
-        state.particles = state.particles.filter((p) => p.life > 0);
-        updateHud();
-      }
-
-      function spawnCard() {
-        const w = canvas.clientWidth;
-        const correctPool = state.meal.foods.filter((entry) => !state.filled.has(entry.slot));
-        const useCorrect = correctPool.length > 0 && Math.random() < 0.58;
-        const source = useCorrect ? pick(correctPool) : pick(DECOYS);
-        const width = Math.min(160, Math.max(118, w * 0.24));
-        state.cards.push({
-          ...source,
-          id: `${Date.now()}-${Math.random()}`,
-          x: 12 + Math.random() * Math.max(1, w - width - 24),
-          y: -78,
-          width,
-          height: 68,
-          speed: 2.25 + state.round * 0.17 + Math.random() * 0.75,
-          spin: 0,
-          spinSpeed: (Math.random() - 0.5) * 0.016,
-          correct: state.meal.foods.some((entry) => entry.name === source.name && entry.slot === source.slot),
-        });
-      }
-
-      function pick(list) {
-        return list[Math.floor(Math.random() * list.length)];
-      }
-
-      function handlePointer(event) {
-        if (state.mode !== "playing") return;
-        const rect = canvas.getBoundingClientRect();
-        const point = getPoint(event, rect);
-        for (let i = state.cards.length - 1; i >= 0; i -= 1) {
-          const card = state.cards[i];
-          if (point.x >= card.x && point.x <= card.x + card.width && point.y >= card.y && point.y <= card.y + card.height) {
-            hitCard(card);
-            event.preventDefault();
-            return;
-          }
-        }
-      }
-
-      function getPoint(event, rect) {
-        const touch = event.changedTouches ? event.changedTouches[0] : event;
-        return { x: touch.clientX - rect.left, y: touch.clientY - rect.top };
-      }
-
-      function hitCard(card) {
-        card.hit = true;
-        const alreadyFilled = state.filled.has(card.slot);
-        if (card.correct && !alreadyFilled) {
-          state.filled.add(card.slot);
-          state.combo += 1;
-          const gained = 120 + state.combo * 24 + state.round * 10;
-          state.score += gained;
-          burst(card.x + card.width / 2, card.y + card.height / 2, state.meal.accent, 12);
-          els.message.textContent = `${SLOT_LABELS[card.slot]} ${card.name} 정답! +${gained}점`;
-          if (state.filled.size === state.meal.foods.length) {
-            completeRound();
-          }
-        } else {
+        if (state.patienceMs <= 0) {
+          state.mistakes += 1;
           state.combo = 0;
-          state.lives -= 1;
-          state.score = Math.max(0, state.score - 90);
-          burst(card.x + card.width / 2, card.y + card.height / 2, "#d95b55", 8);
-          els.message.textContent = alreadyFilled ? "이미 채운 칸입니다. 다른 정답을 노리세요." : `${card.name}은 이번 식판 정답이 아닙니다.`;
-          if (state.lives <= 0) finishGame();
+          state.score = Math.max(0, state.score - 350);
+          els.message.textContent = "손님이 기다리다 나갔습니다. 다음 주문!";
+          if (state.mistakes >= 5) {
+            finishGame();
+          } else {
+            newOrder();
+          }
         }
-        updateHud();
+
+        if (state.timeMs <= 0) finishGame();
+        render();
       }
 
-      function completeRound() {
-        const bonus = 360 + state.combo * 30 + Math.ceil(state.timeMs / 1000) * 5;
-        state.score += bonus;
-        state.timeMs += 7000;
-        state.round += 1;
-        state.combo += 2;
-        els.message.textContent = `식판 완성! 보너스 +${bonus}점, 시간 +7초`;
-        window.setTimeout(() => {
-          if (state.mode === "playing") setupRound();
-        }, 700);
+      function clickStation(slotKey) {
+        if (!state.running) return;
+        const station = state.stations[slotKey];
+        const cfg = slotConfig(slotKey);
+        const orderFood = orderFoodFor(slotKey);
+
+        if (station.status === "idle") {
+          station.status = "cooking";
+          station.elapsed = 0;
+          els.message.textContent = `${cfg.station}에서 ${orderFood.name} 조리 시작!`;
+          render();
+          return;
+        }
+
+        if (station.status === "cooking") {
+          els.message.textContent = "아직 덜 익었습니다. 초록색 완성 타이밍까지 기다리세요.";
+          state.combo = Math.max(0, state.combo - 1);
+          return;
+        }
+
+        if (station.status === "ready") {
+          state.tray[slotKey] = { ...orderFood, quality: stationQuality(station, cfg) };
+          station.status = "idle";
+          station.elapsed = 0;
+          const q = state.tray[slotKey].quality;
+          els.message.textContent = q > 0.85 ? `${orderFood.name} 완벽한 타이밍!` : `${orderFood.name} 담기 완료.`;
+          render();
+          return;
+        }
+
+        if (station.status === "burned") {
+          station.status = "idle";
+          station.elapsed = 0;
+          state.mistakes += 1;
+          state.score = Math.max(0, state.score - 120);
+          els.message.textContent = "탄 음식은 버렸습니다. 같은 조리대를 다시 누르세요.";
+          if (state.mistakes >= 5) finishGame();
+          render();
+        }
       }
 
-      function burst(x, y, color, count) {
-        for (let i = 0; i < count; i += 1) {
-          state.particles.push({
-            x,
-            y,
-            vx: (Math.random() - 0.5) * 8,
-            vy: -Math.random() * 5 - 1,
-            size: 4 + Math.random() * 5,
-            color,
-            life: 420 + Math.random() * 260,
-          });
+      function stationQuality(station, cfg) {
+        const readyElapsed = Math.max(0, station.elapsed - cfg.cook);
+        return Math.max(0.45, 1 - readyElapsed / BURN_LIMIT);
+      }
+
+      function serve() {
+        if (!state.running) return;
+        const count = Object.keys(state.tray).length;
+        if (count < SLOTS.length) {
+          els.message.textContent = `아직 ${SLOTS.length - count}개가 부족합니다.`;
+          return;
         }
+
+        const quality = Object.values(state.tray).reduce((sum, item) => sum + item.quality, 0) / SLOTS.length;
+        const patienceRatio = Math.max(0, state.patienceMs / state.maxPatienceMs);
+        const base = 900;
+        const qualityBonus = Math.round(quality * 420);
+        const speedBonus = Math.round(patienceRatio * 360);
+        const comboBonus = state.combo * 90;
+        const earned = base + qualityBonus + speedBonus + comboBonus;
+
+        state.score += earned;
+        state.served += 1;
+        state.combo += 1;
+        state.timeMs += 5000;
+        els.message.textContent = `서빙 성공! +${earned}원 · 시간 +5초`;
+        newOrder();
+        render();
+      }
+
+      function clearTray() {
+        if (!state.running) return;
+        state.tray = {};
+        state.combo = 0;
+        els.message.textContent = "식판을 비웠습니다.";
+        render();
       }
 
       function finishGame() {
-        state.mode = "ended";
-        els.endTitle.textContent = state.score >= 5200 ? "제철 식단 마스터" : state.score >= 2800 ? "식판 러시 성공" : "도전 종료";
-        els.endText.textContent = `최종 점수 ${state.score.toLocaleString("ko-KR")}점 · ${Math.max(1, state.round - 1)}라운드`;
+        if (!state.running) return;
+        state.running = false;
+        clearInterval(state.timer);
+        els.endTitle.textContent = state.score >= 9000 ? "제철 가게 대박" : state.score >= 5500 ? "영업 성공" : "영업 종료";
+        els.endText.textContent = `오늘 매출 ${state.score.toLocaleString("ko-KR")}원 · 손님 ${state.served}명`;
         els.endOverlay.classList.add("show");
-        updateHud();
-        draw();
+        render();
       }
 
-      function togglePause() {
-        if (state.mode === "playing") {
-          state.mode = "paused";
-          els.pauseButton.textContent = "재개";
-          els.message.textContent = "일시정지 중입니다.";
-        } else if (state.mode === "paused") {
-          state.mode = "playing";
-          els.pauseButton.textContent = "일시정지";
-          state.last = performance.now();
-          requestAnimationFrame(loop);
-        }
+      function slotConfig(slotKey) {
+        return SLOTS.find((slot) => slot.key === slotKey);
       }
 
-      function skipRound() {
-        if (state.mode !== "playing") return;
-        state.combo = 0;
-        state.lives = Math.max(1, state.lives - 1);
-        state.round += 1;
-        setupRound();
+      function orderFoodFor(slotKey) {
+        return state.order.foods.find((item) => item.slot === slotKey);
       }
 
-      function updateHud() {
-        els.score.textContent = state.score.toLocaleString("ko-KR");
+      function render() {
+        els.score.textContent = `${state.score.toLocaleString("ko-KR")}원`;
         els.time.textContent = Math.max(0, Math.ceil(state.timeMs / 1000)).toString();
+        els.served.textContent = `${state.served}명`;
         els.combo.textContent = state.combo.toString();
-        els.round.textContent = state.round.toString();
-        els.lives.textContent = "♥".repeat(Math.max(0, state.lives));
-        els.seasonIcon.textContent = state.meal.icon;
-        els.seasonTitle.textContent = state.meal.title;
-        els.seasonHint.textContent = state.meal.hint;
-        els.persona.textContent = state.persona === "male" ? "남학생" : "여학생";
-        els.targetNutri.textContent = `${state.meal.kcal[state.persona]} kcal · ${state.meal.protein[state.persona]}g`;
-        renderNeeds();
+        els.mistakes.textContent = `${state.mistakes}/5`;
+        els.orderTitle.textContent = `${state.order.icon} ${state.order.season} 제철 한 끼`;
+        els.orderCopy.textContent = state.order.nutrition;
+        els.patienceFill.style.width = `${Math.max(0, (state.patienceMs / state.maxPatienceMs) * 100)}%`;
+        els.serveButton.disabled = !state.running;
+        els.trashButton.disabled = !state.running;
+        renderOrderList();
+        renderStations();
+        renderTray();
       }
 
-      function renderNeeds() {
-        els.needList.innerHTML = "";
-        for (const entry of state.meal.foods) {
+      function renderOrderList() {
+        els.orderList.innerHTML = "";
+        for (const item of state.order.foods) {
+          const done = Boolean(state.tray[item.slot]);
           const row = document.createElement("div");
-          row.className = `need ${state.filled.has(entry.slot) ? "done" : ""}`;
+          row.className = `need ${done ? "done" : ""}`;
           row.innerHTML = `
-            <span class="need-label">${SLOT_LABELS[entry.slot]}</span>
-            <span class="need-name">${entry.icon} ${entry.name}</span>
-            <span class="need-check">${state.filled.has(entry.slot) ? "✓" : ""}</span>
+            <span class="label">${slotConfig(item.slot).label}</span>
+            <span class="name">${item.icon} ${item.name}</span>
+            <span class="check">${done ? "✓" : ""}</span>
           `;
-          els.needList.appendChild(row);
+          els.orderList.appendChild(row);
         }
       }
 
-      function draw() {
-        const w = canvas.clientWidth;
-        const h = canvas.clientHeight;
-        ctx.clearRect(0, 0, w, h);
-        drawBackground(w, h);
-        drawLane(w, h);
-        for (const card of state.cards) drawCard(card);
-        for (const p of state.particles) drawParticle(p);
-      }
-
-      function drawBackground(w, h) {
-        ctx.fillStyle = "#fffaf0";
-        ctx.fillRect(0, 0, w, h);
-        ctx.strokeStyle = "rgba(88, 64, 38, 0.08)";
-        ctx.lineWidth = 1;
-        for (let x = 0; x < w; x += 34) {
-          ctx.beginPath();
-          ctx.moveTo(x, 0);
-          ctx.lineTo(x, h);
-          ctx.stroke();
-        }
-        for (let y = 0; y < h; y += 34) {
-          ctx.beginPath();
-          ctx.moveTo(0, y);
-          ctx.lineTo(w, y);
-          ctx.stroke();
+      function renderStations() {
+        els.stations.innerHTML = "";
+        for (const cfg of SLOTS) {
+          const station = state.stations[cfg.key];
+          const item = orderFoodFor(cfg.key);
+          const progress = stationProgress(station, cfg);
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = `station ${station.status}`;
+          button.innerHTML = `
+            <div class="station-head">
+              <h3 class="station-title">${cfg.station}</h3>
+              <span class="station-icon">${cfg.icon}</span>
+            </div>
+            <div class="pot">
+              <span class="food-emoji">${station.status === "idle" ? item.icon : station.status === "burned" ? "💥" : item.icon}</span>
+            </div>
+            <div>
+              <div class="station-status">${stationText(station, cfg, item)}</div>
+              <div class="cookbar"><div class="cookfill" style="width:${progress}%"></div></div>
+            </div>
+          `;
+          button.addEventListener("click", () => clickStation(cfg.key));
+          els.stations.appendChild(button);
         }
       }
 
-      function drawLane(w, h) {
-        const trayH = 86;
-        ctx.fillStyle = state.meal.soft;
-        roundRect(18, h - trayH - 18, w - 36, trayH, 12);
-        ctx.fill();
-        ctx.strokeStyle = state.meal.accent;
-        ctx.lineWidth = 2;
-        ctx.stroke();
-
-        const slotW = (w - 58) / 5;
-        state.meal.foods.forEach((entry, index) => {
-          const x = 28 + index * slotW;
-          const done = state.filled.has(entry.slot);
-          ctx.fillStyle = done ? state.meal.accent : "#fffdf7";
-          roundRect(x, h - trayH - 7, slotW - 8, 58, 8);
-          ctx.fill();
-          ctx.fillStyle = done ? "#fff" : "#7a6b5a";
-          ctx.font = "800 12px system-ui, sans-serif";
-          ctx.textAlign = "center";
-          ctx.textBaseline = "middle";
-          ctx.fillText(SLOT_LABELS[entry.slot], x + (slotW - 8) / 2, h - trayH + 11);
-          ctx.font = "900 18px system-ui, sans-serif";
-          ctx.fillText(done ? entry.icon : "?", x + (slotW - 8) / 2, h - trayH + 35);
-        });
+      function stationProgress(station, cfg) {
+        if (station.status === "idle") return 0;
+        if (station.status === "burned") return 100;
+        return Math.max(0, Math.min(100, (station.elapsed / (cfg.cook + cfg.ready)) * 100));
       }
 
-      function drawCard(card) {
-        ctx.save();
-        ctx.translate(card.x + card.width / 2, card.y + card.height / 2);
-        ctx.rotate(card.spin);
-        ctx.translate(-card.width / 2, -card.height / 2);
-        ctx.fillStyle = "#ffffff";
-        roundRect(0, 0, card.width, card.height, 10);
-        ctx.fill();
-        ctx.strokeStyle = card.correct ? state.meal.accent : "#d8cab5";
-        ctx.lineWidth = 2;
-        ctx.stroke();
-        ctx.fillStyle = card.correct ? state.meal.soft : "#f5eadb";
-        roundRect(8, 9, 42, 50, 8);
-        ctx.fill();
-        ctx.fillStyle = "#2c241b";
-        ctx.font = "900 24px system-ui, sans-serif";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(card.icon, 29, 34);
-        ctx.textAlign = "left";
-        ctx.font = "900 15px system-ui, sans-serif";
-        wrapText(card.name, 58, 26, card.width - 66, 17);
-        ctx.fillStyle = "#74695d";
-        ctx.font = "800 11px system-ui, sans-serif";
-        ctx.fillText(SLOT_LABELS[card.slot], 58, 54);
-        ctx.restore();
+      function stationText(station, cfg, item) {
+        if (station.status === "idle") return `${item.name} 시작`;
+        if (station.status === "cooking") return "조리 중...";
+        if (station.status === "ready") return "완성! 지금 담기";
+        return "탐! 눌러서 버리기";
       }
 
-      function drawParticle(p) {
-        ctx.globalAlpha = Math.max(0, p.life / 680);
-        ctx.fillStyle = p.color;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.globalAlpha = 1;
-      }
-
-      function wrapText(text, x, y, maxWidth, lineHeight) {
-        const chars = [...text];
-        let line = "";
-        let lineNo = 0;
-        for (const ch of chars) {
-          const test = line + ch;
-          if (ctx.measureText(test).width > maxWidth && line) {
-            ctx.fillText(line, x, y + lineNo * lineHeight);
-            line = ch;
-            lineNo += 1;
-          } else {
-            line = test;
-          }
+      function renderTray() {
+        els.traySlots.innerHTML = "";
+        const filled = Object.keys(state.tray).length;
+        els.trayScore.textContent = `${filled} / ${SLOTS.length}`;
+        for (const cfg of SLOTS) {
+          const item = state.tray[cfg.key];
+          const row = document.createElement("div");
+          row.className = `slot ${item ? "filled" : ""}`;
+          row.innerHTML = `
+            <span class="label">${cfg.label}</span>
+            <span class="name">${item ? `${item.icon} ${item.name}` : "비어 있음"}</span>
+            <span class="check">${item ? "✓" : ""}</span>
+          `;
+          els.traySlots.appendChild(row);
         }
-        ctx.fillText(line, x, y + lineNo * lineHeight);
       }
 
-      function roundRect(x, y, width, height, radius) {
-        ctx.beginPath();
-        ctx.moveTo(x + radius, y);
-        ctx.lineTo(x + width - radius, y);
-        ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-        ctx.lineTo(x + width, y + height - radius);
-        ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-        ctx.lineTo(x + radius, y + height);
-        ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-        ctx.lineTo(x, y + radius);
-        ctx.quadraticCurveTo(x, y, x + radius, y);
-        ctx.closePath();
-      }
-
-      window.addEventListener("resize", () => {
-        resizeCanvas();
-        draw();
-      });
-      canvas.addEventListener("click", handlePointer);
-      canvas.addEventListener("touchstart", handlePointer, { passive: false });
       els.startButton.addEventListener("click", startGame);
+      els.overlayStart.addEventListener("click", startGame);
       els.restartButton.addEventListener("click", startGame);
-      els.pauseButton.addEventListener("click", togglePause);
-      els.skipButton.addEventListener("click", skipRound);
+      els.serveButton.addEventListener("click", serve);
+      els.trashButton.addEventListener("click", clearTray);
 
-      resizeCanvas();
-      setupRound();
-      draw();
+      resetStations();
+      render();
     </script>
   </body>
 </html>
