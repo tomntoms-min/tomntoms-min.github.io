@@ -92,16 +92,97 @@
       "use strict";
 
       (() => {
+        const groups = [
+          ["protein", "단백질"],
+          ["grain", "곡물"],
+          ["vegetable", "채소"],
+          ["fruit", "과일"],
+          ["seasoning", "양념"],
+          ["extra", "기타"],
+        ];
+        const categoryMap = {
+          protein: ["쭈꾸미", "바지락", "오징어", "고등어", "굴", "멸치육수", "햄", "닭가슴살"],
+          grain: ["쌀", "보리", "콩", "현미", "물", "빵"],
+          vegetable: ["양파", "냉이", "달래", "가지", "오이", "토마토", "배추", "버섯", "단호박", "시금치", "김치", "브로콜리", "감자", "고추"],
+          fruit: ["딸기", "수박", "레몬", "사과", "감귤", "오렌지"],
+        };
         const style = document.createElement("style");
-        style.textContent = ".cook-button{width:100%;min-height:28px;margin-top:6px;border:0;border-radius:8px;background:var(--ink);color:#fff;cursor:pointer;font-weight:950;font-size:.74rem}@media(max-width:560px){.cook-button{min-height:24px;margin-top:4px;font-size:.66rem}}";
+        style.textContent = `
+          .cook-button{width:100%;min-height:28px;margin-top:6px;border:0;border-radius:8px;background:var(--ink);color:#fff;cursor:pointer;font-weight:950;font-size:.74rem}
+          .pantry-group{display:contents}.pantry-group h3{grid-column:1/-1;margin:3px 0 -2px;padding:2px 6px;border-left:4px solid var(--accent);color:var(--muted);font-size:.66rem;font-weight:950;line-height:1.1}
+          .ingredient.category-protein{border-color:rgba(216,79,79,.32);background:linear-gradient(135deg,rgba(255,255,255,.96),rgba(255,238,232,.9))}
+          .ingredient.category-grain{border-color:rgba(194,139,47,.34);background:linear-gradient(135deg,rgba(255,255,255,.96),rgba(255,245,220,.9))}
+          .ingredient.category-vegetable{border-color:rgba(47,158,99,.34);background:linear-gradient(135deg,rgba(255,255,255,.96),rgba(232,248,232,.9))}
+          .ingredient.category-fruit{border-color:rgba(226,85,111,.34);background:linear-gradient(135deg,rgba(255,255,255,.96),rgba(255,234,239,.9))}
+          .ingredient.category-seasoning{border-color:rgba(61,139,204,.34);background:linear-gradient(135deg,rgba(255,255,255,.96),rgba(232,243,255,.9))}
+          .station-target{position:relative;overflow:hidden}.station.cooking .station-target::after{position:absolute;z-index:2;display:grid;place-items:center;width:34px;height:34px;border-radius:999px;background:rgba(255,255,255,.82);box-shadow:0 8px 18px rgba(43,33,24,.18);font-size:1.24rem;pointer-events:none}
+          .slot-main.cooking .station-target::after{content:"🍳";animation:pan-flip .46s ease-in-out infinite}.slot-rice.cooking .station-target::after{content:"♨";animation:steam-rise .72s ease-in-out infinite}.slot-soup.cooking .station-target::after{content:"🥄";animation:stir-pot .56s linear infinite}.slot-side.cooking .station-target::after{content:"🔪";animation:knife-chop .28s ease-in-out infinite}.slot-dessert.cooking .station-target::after{content:"🥣";animation:bowl-shake .36s ease-in-out infinite}.station.quick-cook .station-target{animation:cook-flash .32s ease-out}
+          @keyframes stir-pot{from{transform:rotate(0) translateX(12px) rotate(0)}to{transform:rotate(360deg) translateX(12px) rotate(-360deg)}}@keyframes knife-chop{0%,100%{transform:translate(10px,-12px) rotate(-18deg)}50%{transform:translate(-8px,10px) rotate(10deg)}}@keyframes pan-flip{0%,100%{transform:translateX(-12px) rotate(-12deg)}50%{transform:translateX(12px) rotate(16deg) scale(1.08)}}@keyframes steam-rise{0%{transform:translateY(12px);opacity:.55}50%{opacity:1}100%{transform:translateY(-12px);opacity:.55}}@keyframes bowl-shake{0%,100%{transform:translateX(-10px) rotate(-10deg)}50%{transform:translateX(10px) rotate(10deg)}}@keyframes cook-flash{0%{filter:brightness(1)}50%{filter:brightness(1.12) saturate(1.12)}100%{filter:brightness(1)}}
+          @media(max-width:560px){.cook-button{min-height:24px;margin-top:4px;font-size:.66rem}.pantry-group h3{margin:2px 0 -1px;padding:1px 5px;font-size:.56rem}}
+        `;
         document.head.appendChild(style);
 
-        const oldSetMessage = setMessage;
-        setMessage = (text) => oldSetMessage(text.replace("레시피를 보고 ", "").replace("레시피와", "주문과").replace("레시피가", "조합이"));
+        function category(item) {
+          if (item.kind === "양념") return "seasoning";
+          for (const [key, names] of Object.entries(categoryMap)) if (names.includes(item.name)) return key;
+          return "extra";
+        }
 
-        const scrubScreen = () => {
+        function groupIndex(item) {
+          return groups.findIndex(([key]) => key === category(item));
+        }
+
+        function card(item) {
+          const node = document.createElement("div");
+          node.className = `ingredient category-${category(item)} ${item.used ? "used" : ""}`;
+          node.dataset.dragType = "ingredient";
+          node.dataset.dragId = item.dragId;
+          node.innerHTML = `${foodPhoto(item)}<span><span class="name">${item.name}</span><span class="small">${item.kind}${item.decoy ? " · 미끼" : ""}</span></span>`;
+          if (!item.used) node.addEventListener("pointerdown", startDrag);
+          return node;
+        }
+
+        renderPantry = () => {
+          els.pantry.innerHTML = "";
+          const buckets = new Map(groups.map(([key, label]) => [key, { key, label, items: [] }]));
+          [...state.pantry].sort((a, b) => groupIndex(a) - groupIndex(b) || a.name.localeCompare(b.name, "ko-KR")).forEach((item) => buckets.get(category(item)).items.push(item));
+          for (const group of buckets.values()) {
+            if (!group.items.length) continue;
+            const section = document.createElement("section");
+            section.className = `pantry-group group-${group.key}`;
+            section.innerHTML = `<h3>${group.label}</h3>`;
+            group.items.forEach((item) => section.appendChild(card(item)));
+            els.pantry.appendChild(section);
+          }
+        };
+
+        const cleanMessage = setMessage;
+        setMessage = (text) => cleanMessage(text.replace("레시피를 보고 ", "").replace("레시피와", "주문과").replace("레시피가", "조합이"));
+
+        const stationNode = (slot) => els.stations.querySelector(`.station[data-slot="${slot}"]`);
+        const scrubTitle = () => {
           const title = document.getElementById("orderTitle");
           if (title) title.textContent = title.textContent.replace("제철 레시피", "제철 주문");
+        };
+        const oldRenderHud = renderHud;
+        renderHud = () => {
+          oldRenderHud();
+          scrubTitle();
+        };
+        const oldActionDown = actionDown;
+        actionDown = (event) => {
+          oldActionDown(event);
+          if (state.action?.slot) stationNode(state.action.slot)?.classList.add("cooking");
+        };
+        const oldActionUp = actionUp;
+        actionUp = (event) => {
+          const slot = state.action?.slot;
+          oldActionUp(event);
+          if (slot) stationNode(slot)?.classList.remove("cooking");
+        };
+
+        const scrub = () => {
+          scrubTitle();
           document.querySelectorAll(".recipe-line").forEach((node) => node.remove());
           document.querySelectorAll(".station-empty .small").forEach((node) => {
             if (node.textContent.includes("레시피:")) node.textContent = "재료를 자유롭게 조합";
@@ -111,11 +192,15 @@
             const button = document.createElement("button");
             button.className = "cook-button";
             button.type = "button";
+            button.dataset.cookSlot = pad.dataset.slot;
             button.textContent = "조리하기";
             button.addEventListener("pointerdown", (event) => event.stopPropagation());
             button.addEventListener("click", (event) => {
               event.stopPropagation();
-              completeAction(pad.dataset.slot);
+              const station = state.stations[pad.dataset.slot];
+              if (!station?.ingredients.length || station.status === "ready") return;
+              stationNode(pad.dataset.slot)?.classList.add("cooking", "quick-cook");
+              window.setTimeout(() => completeAction(pad.dataset.slot), 320);
             });
             pad.appendChild(button);
           });
@@ -124,10 +209,9 @@
         const oldRender = render;
         render = () => {
           oldRender();
-          scrubScreen();
+          scrub();
         };
-
-        scrubScreen();
+        render();
       })();
     </script>
 
