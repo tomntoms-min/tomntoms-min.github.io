@@ -88,7 +88,48 @@
     </div>
 
     <script src="game.js"></script>
-    <script src="hotfix.js"></script>
+    <script>
+      "use strict";
+
+      (() => {
+        const style = document.createElement("style");
+        style.textContent = ".cook-button{width:100%;min-height:28px;margin-top:6px;border:0;border-radius:8px;background:var(--ink);color:#fff;cursor:pointer;font-weight:950;font-size:.74rem}@media(max-width:560px){.cook-button{min-height:24px;margin-top:4px;font-size:.66rem}}";
+        document.head.appendChild(style);
+
+        const oldSetMessage = setMessage;
+        setMessage = (text) => oldSetMessage(text.replace("레시피를 보고 ", "").replace("레시피와", "주문과").replace("레시피가", "조합이"));
+
+        const scrubScreen = () => {
+          const title = document.getElementById("orderTitle");
+          if (title) title.textContent = title.textContent.replace("제철 레시피", "제철 주문");
+          document.querySelectorAll(".recipe-line").forEach((node) => node.remove());
+          document.querySelectorAll(".station-empty .small").forEach((node) => {
+            if (node.textContent.includes("레시피:")) node.textContent = "재료를 자유롭게 조합";
+          });
+          document.querySelectorAll(".action-pad").forEach((pad) => {
+            if (pad.querySelector(".cook-button")) return;
+            const button = document.createElement("button");
+            button.className = "cook-button";
+            button.type = "button";
+            button.textContent = "조리하기";
+            button.addEventListener("pointerdown", (event) => event.stopPropagation());
+            button.addEventListener("click", (event) => {
+              event.stopPropagation();
+              completeAction(pad.dataset.slot);
+            });
+            pad.appendChild(button);
+          });
+        };
+
+        const oldRender = render;
+        render = () => {
+          oldRender();
+          scrubScreen();
+        };
+
+        scrubScreen();
+      })();
+    </script>
 
   </body>
 </html>
