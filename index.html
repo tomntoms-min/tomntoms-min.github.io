@@ -106,9 +106,20 @@
           vegetable: ["양파", "냉이", "달래", "가지", "오이", "토마토", "배추", "버섯", "단호박", "시금치", "김치", "브로콜리", "감자", "고추"],
           fruit: ["딸기", "수박", "레몬", "사과", "감귤", "오렌지"],
         };
+        const customers = [
+          { emoji: "👩‍🎓", name: "민지", role: "공강 20분 대학생", line: "빨리 먹고 강의실 뛰어가야 해요.", tags: ["속도 중시", "밥 든든히"], tone: "#3d8bcc" },
+          { emoji: "👨‍💼", name: "박대리", role: "점심 회의 직장인", line: "깔끔하고 짜지 않으면 좋겠습니다.", tags: ["담백 선호", "국 필수"], tone: "#5f6f52" },
+          { emoji: "👵", name: "순자", role: "동네 단골", line: "간은 세지 않게, 따뜻하게 부탁해.", tags: ["순한 간", "따뜻한 국"], tone: "#c7832f" },
+          { emoji: "🧑‍🚴", name: "도윤", role: "운동 끝난 손님", line: "단백질 넉넉하면 바로 단골 됩니다.", tags: ["단백질", "빠른 회복"], tone: "#2f9e63" },
+          { emoji: "👩‍🍳", name: "유라", role: "까다로운 미식가", line: "재료 조합을 보면 실력이 보이죠.", tags: ["완성도 중시", "감점 엄격"], tone: "#d6655e" },
+          { emoji: "🧒", name: "하준", role: "후식 먼저 보는 아이", line: "과일 맛있는 거 있죠?", tags: ["과일 선호", "기다림 짧음"], tone: "#e95c61" },
+          { emoji: "🧑‍💻", name: "지오", role: "밤샘 과제러", line: "든든하고 자극적인 한 끼면 살 것 같아요.", tags: ["진한 맛", "든든함"], tone: "#7c5bd6" },
+          { emoji: "👨‍👧", name: "태민", role: "아이와 온 보호자", line: "맵지 않게 균형 있게 부탁합니다.", tags: ["균형식", "맵기 주의"], tone: "#8b6f47" },
+        ];
         const style = document.createElement("style");
         style.textContent = `
           .cook-button{width:100%;min-height:28px;margin-top:6px;border:0;border-radius:8px;background:var(--ink);color:#fff;cursor:pointer;font-weight:950;font-size:.74rem}
+          .customer-personality{margin-top:5px;display:grid;gap:3px}.customer-name{font-size:.76rem;font-weight:950;color:var(--ink)}.customer-line{font-size:.68rem;font-weight:850;color:var(--muted);line-height:1.18}.customer-tags{display:flex;gap:4px;flex-wrap:wrap}.customer-tag{padding:2px 5px;border-radius:999px;background:color-mix(in srgb,var(--customer-tone,#e45d45) 16%,#fff);color:var(--ink);font-size:.58rem;font-weight:950}.face{outline:2px solid color-mix(in srgb,var(--customer-tone,#e45d45) 42%,transparent)}
           .pantry-group{display:contents}.pantry-group h3{grid-column:1/-1;margin:3px 0 -2px;padding:2px 6px;border-left:4px solid var(--accent);color:var(--muted);font-size:.66rem;font-weight:950;line-height:1.1}
           .ingredient.category-protein{border-color:rgba(216,79,79,.32);background:linear-gradient(135deg,rgba(255,255,255,.96),rgba(255,238,232,.9))}
           .ingredient.category-grain{border-color:rgba(194,139,47,.34);background:linear-gradient(135deg,rgba(255,255,255,.96),rgba(255,245,220,.9))}
@@ -118,7 +129,7 @@
           .station-target{position:relative;overflow:hidden}.station.cooking .station-target::after{position:absolute;z-index:2;display:grid;place-items:center;width:34px;height:34px;border-radius:999px;background:rgba(255,255,255,.82);box-shadow:0 8px 18px rgba(43,33,24,.18);font-size:1.24rem;pointer-events:none}
           .slot-main.cooking .station-target::after{content:"🍳";animation:pan-flip .46s ease-in-out infinite}.slot-rice.cooking .station-target::after{content:"♨";animation:steam-rise .72s ease-in-out infinite}.slot-soup.cooking .station-target::after{content:"🥄";animation:stir-pot .56s linear infinite}.slot-side.cooking .station-target::after{content:"🔪";animation:knife-chop .28s ease-in-out infinite}.slot-dessert.cooking .station-target::after{content:"🥣";animation:bowl-shake .36s ease-in-out infinite}.station.quick-cook .station-target{animation:cook-flash .32s ease-out}
           @keyframes stir-pot{from{transform:rotate(0) translateX(12px) rotate(0)}to{transform:rotate(360deg) translateX(12px) rotate(-360deg)}}@keyframes knife-chop{0%,100%{transform:translate(10px,-12px) rotate(-18deg)}50%{transform:translate(-8px,10px) rotate(10deg)}}@keyframes pan-flip{0%,100%{transform:translateX(-12px) rotate(-12deg)}50%{transform:translateX(12px) rotate(16deg) scale(1.08)}}@keyframes steam-rise{0%{transform:translateY(12px);opacity:.55}50%{opacity:1}100%{transform:translateY(-12px);opacity:.55}}@keyframes bowl-shake{0%,100%{transform:translateX(-10px) rotate(-10deg)}50%{transform:translateX(10px) rotate(10deg)}}@keyframes cook-flash{0%{filter:brightness(1)}50%{filter:brightness(1.12) saturate(1.12)}100%{filter:brightness(1)}}
-          @media(max-width:560px){.cook-button{min-height:24px;margin-top:4px;font-size:.66rem}.pantry-group h3{margin:2px 0 -1px;padding:1px 5px;font-size:.56rem}}
+          @media(max-width:560px){.cook-button{min-height:24px;margin-top:4px;font-size:.66rem}.pantry-group h3{margin:2px 0 -1px;padding:1px 5px;font-size:.56rem}.customer-line{display:none}.customer-tag{font-size:.52rem;padding:1px 4px}}
         `;
         document.head.appendChild(style);
 
@@ -160,6 +171,30 @@
         setMessage = (text) => cleanMessage(text.replace("레시피를 보고 ", "").replace("레시피와", "주문과").replace("레시피가", "조합이"));
 
         const stationNode = (slot) => els.stations.querySelector(`.station[data-slot="${slot}"]`);
+        function currentCustomer() {
+          const season = state.order?.season || "";
+          const code = [...season].reduce((sum, char) => sum + char.charCodeAt(0), 0);
+          return customers[(state.served * 3 + code) % customers.length];
+        }
+
+        function updateCustomer() {
+          const customer = currentCustomer();
+          document.documentElement.style.setProperty("--customer-tone", customer.tone);
+          els.customerFace.textContent = customer.emoji;
+          let node = document.getElementById("customerPersonality");
+          if (!node) {
+            node = document.createElement("div");
+            node.id = "customerPersonality";
+            node.className = "customer-personality";
+            els.orderCopy.insertAdjacentElement("afterend", node);
+          }
+          node.innerHTML = `
+            <div class="customer-name">${customer.name} · ${customer.role}</div>
+            <div class="customer-line">“${customer.line}”</div>
+            <div class="customer-tags">${customer.tags.map((tag) => `<span class="customer-tag">${tag}</span>`).join("")}</div>
+          `;
+        }
+
         const scrubTitle = () => {
           const title = document.getElementById("orderTitle");
           if (title) title.textContent = title.textContent.replace("제철 레시피", "제철 주문");
@@ -168,6 +203,7 @@
         renderHud = () => {
           oldRenderHud();
           scrubTitle();
+          updateCustomer();
         };
         const oldActionDown = actionDown;
         actionDown = (event) => {
