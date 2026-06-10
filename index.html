@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>슈식 제철요리 실습실</title>
-    <link rel="stylesheet" href="style.css?v=timers-20260610" />
+    <link rel="stylesheet" href="style.css?v=rankings-20260611" />
 
   </head>
   <body>
@@ -75,6 +75,14 @@
       <div class="modal">
         <h2>재료를 직접 조합하기</h2>
         <p>원재료와 양념을 조리대에 넣고 조리하세요. 주문과 어울릴수록 완성도와 매출이 올라갑니다.</p>
+        <label class="nickname-field" for="nicknameInput">
+          <span>닉네임</span>
+          <input id="nicknameInput" type="text" maxlength="12" autocomplete="nickname" placeholder="요리사 이름" />
+        </label>
+        <section class="ranking-board" aria-label="랭킹">
+          <h3>랭킹 TOP 10</h3>
+          <ol id="startRanking"></ol>
+        </section>
         <button class="primary" id="startButton" type="button">실습 시작</button>
       </div>
     </div>
@@ -83,13 +91,17 @@
       <div class="modal">
         <h2 id="endTitle">영업 종료</h2>
         <p id="endText">오늘 매출 0원</p>
+        <section class="ranking-board" aria-label="랭킹">
+          <h3>랭킹 TOP 10</h3>
+          <ol id="endRanking"></ol>
+        </section>
         <button class="primary" id="restartButton" type="button">다시 하기</button>
       </div>
     </div>
 
     <audio id="bgm" src="assets/Butter_and_Thyme.mp3" preload="auto" loop></audio>
 
-    <script src="game.js?v=timers-20260610"></script>
+    <script src="game.js?v=rankings-20260611"></script>
     <script>
       "use strict";
 
