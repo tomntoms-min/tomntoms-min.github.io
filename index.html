@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>슈식 제철요리 실습실</title>
-    <link rel="stylesheet" href="style.css?v=rice-water-20260610" />
+    <link rel="stylesheet" href="style.css?v=timers-20260610" />
 
   </head>
   <body>
@@ -16,7 +16,7 @@
         </div>
         <section class="hud" aria-label="게임 상태">
           <div class="metric"><span>매출</span><strong id="score">0원</strong></div>
-          <div class="metric"><span>시간</span><strong id="time">150</strong></div>
+          <div class="metric"><span>시간</span><strong id="time">200</strong></div>
           <div class="metric"><span>손님</span><strong id="served">0명</strong></div>
           <div class="metric"><span>콤보</span><strong id="combo">0</strong></div>
           <div class="metric"><span>실수</span><strong id="mistakes">0/5</strong></div>
@@ -36,7 +36,7 @@
           </section>
 
           <section class="panel timer-panel" aria-label="손님 타이머">
-            <div class="timer-ring" id="customerTimer"><strong id="patienceSeconds">42</strong><small>초</small></div>
+            <div class="timer-ring" id="customerTimer"><strong id="patienceSeconds">75</strong><small>초</small></div>
             <div>
               <p class="timer-copy">손님 대기 시간</p>
               <div class="bar" aria-hidden="true"><div class="fill" id="patienceFill"></div></div>
@@ -89,7 +89,7 @@
 
     <audio id="bgm" src="assets/Butter_and_Thyme.mp3" preload="auto" loop></audio>
 
-    <script src="game.js?v=rice-water-20260610"></script>
+    <script src="game.js?v=timers-20260610"></script>
     <script>
       "use strict";
 
