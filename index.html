@@ -87,6 +87,8 @@
       </div>
     </div>
 
+    <audio id="bgm" src="assets/Butter_and_Thyme.mp3" preload="auto" loop></audio>
+
     <script src="game.js"></script>
     <script>
       "use strict";
@@ -132,6 +134,17 @@
           @media(max-width:560px){.cook-button{min-height:24px;margin-top:4px;font-size:.66rem}.pantry-group h3{margin:2px 0 -1px;padding:1px 5px;font-size:.56rem}.customer-line{display:none}.customer-tag{font-size:.52rem;padding:1px 4px}}
         `;
         document.head.appendChild(style);
+
+        const bgm = document.getElementById("bgm");
+        const playBgm = () => {
+          if (!bgm) return;
+          bgm.loop = true;
+          bgm.volume = 0.38;
+          const play = bgm.play();
+          if (play?.catch) play.catch(() => {});
+        };
+        document.getElementById("startButton")?.addEventListener("click", playBgm);
+        document.getElementById("restartButton")?.addEventListener("click", playBgm);
 
         function category(item) {
           if (item.kind === "양념") return "seasoning";
